@@ -1,0 +1,189 @@
+#https://scrnaseq-course.cog.sanger.ac.uk/website/processing-raw-scrna-seq-data.html#trimming-reads
+
+sudo rm /var/cache/apt/archives/lock
+sudo rm /var/lib/dpkg/lock*
+
+
+
+sudo apt-get install python3-setuptools
+sudo easy_install3 pip
+pip3 install --user --upgrade cutadapt
+
+samtools
+./configure
+make
+
+sudo ln -s /media/desktop-bi-16/D2C67EE7C67ECAED/BI/00source/samtools-1.9/samtools /usr/local/bin/samtools
+#=============================================
+## Install R https://shanmdphd.rbind.io/post/2016-10-02-ubuntu-r/
+#=============================================
+sudo echo "deb http://cran.rstudio.com/bin/linux/ubuntu xenial/" | sudo tee -a /etc/apt/sources.list
+gpg --keyserver keyserver.ubuntu.com --recv-key E084DAB9
+gpg -a --export E084DAB9 | sudo apt-key add -
+sudo apt-get update
+sudo apt-get install r-base r-base-dev
+#----------------------------------------------------------
+sudo apt-get install gdebi-core
+cd rstudio-1.2.1335
+sudo gdebi -n rstudio-xenial-1.1.442-amd64.deb
+#----------------------------------------------------------
+rm rstudio-1.0.33-amd64.deb
+
+cd /media/desktop-bi-16/D2C67EE7C67ECAED/BI/00source/R-3.6.1
+
+sudo apt-get install libx11-dev
+sudo apt-get install xorg-dev
+sudo apt-get install libcurl4-openssl-dev
+
+./configure
+make
+
+#sudo apt install r-base-core ##error
+
+sudo apt-get install libcurl4-openssl-dev
+sudo apt-get install libssl-dev
+
+sudo apt install openjdk-8-*
+./configure
+make
+make install
+
+###DEseq2
+sudo apt-get update
+sudo apt-get install libxml2-dev
+
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("DESeq2")
+
+browseVignettes("DESeq2")
+
+library(DESeq2)
+
+
+###############################################################
+
+install.packages(/media/ubuntu/D2C67EE7C67ECAED/BI/00source/fluidigmSC_3.6.2.zip, repos = NULL, type="source")
+
+#=============================================
+## Install fastqc https://raw.githubusercontent.com/s-andrews/FastQC/master/INSTALL.txt
+#=============================================
+sudo apt-get install default-jdk
+sudo apt-get install default-jre
+
+sudo ln -s /media/ubuntu/D2C67EE7C67ECAED/BI/00source/FastQC/fastqc /usr/local/bin/fastqc
+#=============================================
+## Genome Index
+#=============================================
+cd /media/D2C67EE7C67ECAED/BI/00source/STAR-2.7.2b/bin/Linux_x86_64_static
+
+#sudo ln -s cd /media/D2C67EE7C67ECAED/BI/00source/STAR-2.7.2b/bin/Linux_x86_64_static/./STAR /usr/local/bin/STAR
+
+#alias STAR = '/media/desktop-bi-16/D2C67EE7C67ECAED/BI/00source/STAR-2.7.2b/bin/Linux_x86_64/./STAR'
+
+./STAR --runThreadN 4 --runMode genomeGenerate --genomeDir /home/cytogen-bi2/00ref/gencode --genomeFastaFiles /media/D2C67EE7C67ECAED/BI/BI/01reference/ensembl/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa --sjdbGTFfile /media/D2C67EE7C67ECAED/BI/BI/01reference/ensembl/Homo_sapiens.GRCh37.75.gtf --sjdbOverhang 150
+
+./STAR --runThreadN 4 --runMode genomeGenerate --genomeDir /home/cytogen-bi2/00ref/gencode --genomeFastaFiles /home/cytogen-bi2/00ref/gencode/GRCh37.p13.genome.fa --sjdbGTFfile /home/cytogen-bi2/00ref/gencode/gencode.v19.chr_patch_hapl_scaff.annotation.gtf --sjdbOverhang 150
+
+
+./STAR --runThreadN 1 --runMode genomeGenerate --genomeDir /media/desktop-bi-16/D2C67EE7C67ECAED/BI/02ref --genomeFastaFiles /media/desktop-bi-16/D2C67EE7C67ECAED/BI/BI/01reference/ensembl/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa --sjdbGTFfile /media/desktop-bi-16/D2C67EE7C67ECAED/BI/BI/01reference/ensembl/Homo_sapiens.GRCh37.75.gtf --sjdbOverhang 100 --outFileNamePrefix /media/desktop-bi-16/D2C67EE7C67ECAED/BI/02ref/refRSEM/
+
+##RSEM
+
+rsem-prepare-reference --gtf /media/desktop-bi-16/D2C67EE7C67ECAED/BI/BI/01reference/ensembl/Homo_sapiens.GRCh37.75.gtf --star /media/desktop-bi-16/D2C67EE7C67ECAED/BI/BI/01reference/ensembl/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa /media/desktop-bi-16/D2C67EE7C67ECAED/BI/02ref/RSEM/
+#=============================================
+#=============================================
+#=============================================
+## trimming
+#=============================================
+
+trim_galore [options] <filename(s)>
+/media/ubuntu/D2C67EE7C67ECAED/BI/00source/TrimGalore-0.6.4/trim_galore CMC-013_40_1.fastq CMC-013_40_2.fastq --paired --phred33 --fastqc_args "--outdir /media/ubuntu/D2C67EE7C67ECAED/BI/03qc/" -o /media/ubuntu/D2C67EE7C67ECAED/BI/03trim/
+#=============================================
+
+#=============================================
+## kallisto
+#=============================================
+cd /media/desktop-bi-16/D2C67EE7C67ECAED/BI/00source/kallisto
+./kallisto index
+./kallisto quant
+
+#=============================================
+## Mapping
+#=============================================
+cd /media/ubuntu/D2C67EE7C67ECAED/BI/00source/STAR-2.7.2b/bin/Linux_x86_64_static
+
+./STAR --runThreadN 4 --genomeDir /media/D2C67EE7C67ECAED/BI/02ref/STAR --readFilesIn /media/D2C67EE7C67ECAED/BI/02raw/CMC-013_40_1.fastq,/media/D2C67EE7C67ECAED/BI/02raw/CMC-013_40_2.fastq --outFileNamePrefix /media/D2C67EE7C67ECAED/BI/04sam
+
+
+./STAR --runThreadN 4 --genomeDir /media/ubuntu/D2C67EE7C67ECAED/BI/02ref/STAR --readFilesIn /media/ubuntu/D2C67EE7C67ECAED/BI/03trim/CMC-013_40_1_val_1.fq,/media/ubuntu/D2C67EE7C67ECAED/BI/03trim/CMC-013_40_2_val_2.fq --outFileNamePrefix /media/ubuntu/D2C67EE7C67ECAED/BI/04sam/trimCMC01340
+
+
+/media/ubuntu/D2C67EE7C67ECAED/BI/00source/STAR-2.7.2b/bin/Linux_x86_64_static/./STAR --genomeDir /media/desktop-bi-16/D2C67EE7C67ECAED/BI/02ref/STAR --readFilesIn /media/desktop-bi-16/D2C67EE7C67ECAED/BI/03trim/CMC-013_40_1_val_1.fq,/media/desktop-bi-16/D2C67EE7C67ECAED/BI/03trim/CMC-013_40_2_val_2.fq --outFileNamePrefix /media/desktop-bi-16/D2C67EE7C67ECAED/BI/04sam/CMC01340_BC  --runThreadN 4 --outFilterType BySJout --outFilterMultimapNmax 1 --alignSJoverhangMin 8 --alignSJDBoverhangMin 1 --outFilterMismatchNmax 999 --alignIntronMin 20 --alignIntronMax 1000000 --alignMatesGapMax 1000000 --outSAMtype BAM Unsorted --quantMode GeneCounts
+#=============================================
+
+featureCounts -a /home /hgenGene_exonicpos -o epCount Aligned.out.bam -F SAF -f --read2pos 5 -O
+
+#=============================================
+## sam to bam
+#=============================================
+
+samtools view -S -b /media/D2C67EE7C67ECAED/BI/04sam/Aligned.out.sam > /media/D2C67EE7C67ECAED/BI/05bam/CMC-013_40_aligned.bam
+
+samtools view -S -b /media/ubuntu/D2C67EE7C67ECAED/BI/04sam/trimCMC01340Aligned.out.sam > /media/ubuntu/D2C67EE7C67ECAED/BI/05bam/CMC-013_40_trim_aligned.bam
+
+samtools sort /media/ubuntu/D2C67EE7C67ECAED/BI/05bam/CMC-013_40_trim_aligned.bam -o /media/ubuntu/D2C67EE7C67ECAED/BI/06sortedbam/CMC-013_40_trim.sorted.bam
+
+samtools view -h /media/desktop-bi-16/D2C67EE7C67ECAED/BI/06sortedbam/CMC-013_40_trim.sorted.bam > /media/desktop-bi-16/D2C67EE7C67ECAED/BI/06sortedbam/CMC-013_40_trim.sorted.sam
+
+htseq-count --stranded=no /media/desktop-bi-16/D2C67EE7C67ECAED/BI/06sortedbam/CMC-013_40_trim.sorted.sam /media/desktop-bi-16/D2C67EE7C67ECAED/BI/BI/01reference/ensembl/Homo_sapiens.GRCh37.75.gtf > CMC-013_40_HtSeqCount.txt
+
+#=============================================
+#=============================================
+## sorting bam
+#=============================================
+
+samtools sort /media/D2C67EE7C67ECAED/BI/05bam/CMC-013_40_aligned.bam -o /media/D2C67EE7C67ECAED/BI/06sortedbam/CMC-013_40.sorted.bam
+
+
+#=============================================
+## RSEM
+#=============================================
+/media/desktop-bi-16/D2C67EE7C67ECAED/BI/00source/RSEM_tutorial-master/software/RSEM-1.2.25/rsem-calculate-expression --paired-end --bam --estimate-rspd --append-names --output-genome-bam /media/desktop-bi-16/D2C67EE7C67ECAED/BI/05bam/CMC-013_40_trim_aligned.bam /media/desktop-bi-16/D2C67EE7C67ECAED/BI/02ref/STAR exp/CMC-013_40
+
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+SUMMARISING RUN PARAMETERS
+==========================
+Input filename: CMC-013_40_2.fastq
+Trimming mode: paired-end
+Trim Galore version: 0.6.4
+Cutadapt version: 2.4
+Number of cores used for trimming: 1
+Quality Phred score cutoff: 20
+Quality encoding type selected: ASCII+33
+Adapter sequence: 'CTGTCTCTTATA' (Nextera Transposase sequence; auto-detected)
+Maximum trimming error rate: 0.1 (default)
+Minimum required adapter overlap (stringency): 1 bp
+Minimum required sequence length for both reads before a sequence pair gets removed: 20 bp
+Running FastQC on the data once trimming has completed
+Running FastQC with the following extra arguments: '--outdir /media/ubuntu/D2C67EE7C67ECAED/BI/03qc/'
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+#=============================================
+## Counting reads by genes
+#=============================================
+
+gtf_file = HTSeq.GFF_Reader( "/media/desktop-bi-16/D2C67EE7C67ECAED/BI/BI/01reference/ensembl/Homo_sapiens.GRCh37.75.gtf",end_included=True )
+
+
+rsem-prepare-reference --gtf /media/desktop-bi-16/D2C67EE7C67ECAED/BI/BI/01reference/ensembl/Homo_sapiens.GRCh37.75.gtf --star /media/desktop-bi-16/D2C67EE7C67ECAED/BI/BI/01reference/ensembl/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa /media/desktop-bi-16/D2C67EE7C67ECAED/BI/02ref/refRSEM/
+
+
+
+
+
+

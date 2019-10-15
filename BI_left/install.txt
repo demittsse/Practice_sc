@@ -1,0 +1,67 @@
+conda info --envs
+
+sudo apt-get update
+sudo apt-get install r-base r-base-dev
+
+   84  sudo fdisk /dev/sda
+   85  sudo fdisk -l
+   86  sudo mkfs.ext4 /dev/sda1
+   87  sudo blkid
+   88  sudo gedit /etc/fstab
+
+
+
+# To activate this environment, use
+#
+#     $ conda activate seurat
+#
+# To deactivate an active environment, use
+#
+#     $ conda deactivate
+
+conda create -n salmon multiqc salmon
+####################################################
+# To activate this environment, use
+#
+#     $ conda activate salmon
+#
+# To deactivate an active environment, use
+#
+#     $ conda deactivate
+####################################################
+# To activate this environment, use
+#
+#     $ conda activate star
+#
+# To deactivate an active environment, use
+#
+#     $ conda deactivate
+
+done
+Executing transaction: done
+####################################################
+# To activate this environment, use
+#
+#     $ conda activate tidy
+#
+# To deactivate an active environment, use
+#
+#     $ conda deactivate
+####################################################
+# To activate this environment, use
+#
+#     $ conda activate pheat
+#
+# To deactivate an active environment, use
+#
+#     $ conda deactivate
+####################################################
+# To activate this environment, use
+#
+#     $ conda activate QC
+#
+# To deactivate an active environment, use
+#
+#     $ conda deactivate
+
+
