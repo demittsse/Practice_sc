@@ -8,7 +8,6 @@ def ENSG2GeneName(inputTPM,outputFile):
 			geneD[line.split('"')[1]]=line.split('"')[5]
 		
 	inf1=open("%s"%(str(inputTPM)))
-	inf1=open("/media/desktop-bi-16/D2C67EE7C67ECAED/BI/07salmon/03plate/results/191015BY_salmonCounts.csv")
 	resline=inf1.readlines()
 	inf1.close(); gtf.close()
 
