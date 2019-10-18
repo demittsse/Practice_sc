@@ -13,10 +13,12 @@ trimFa=glob.glob("/media/desktop-bi-16/D2C67EE7C67ECAED/BI/03trim/01SMC1113/*.fq
 ### Create output folder & executable bash file ###
 
 os.system("chmod 777 /home/cytogen-bi2/00script/run/%sTrimStar%s.sh"%(start,project_name))
-newTrimDir="/media/desktop-bi-16/D2C67EE7C67ECAED/BI/03trim/%s"%(project_name)
-newStarDir="/media/desktop-bi-16/D2C67EE7C67ECAED/BI/04sam/%s"%(project_name)
-newSortBamDir="/media/desktop-bi-16/D2C67EE7C67ECAED/BI/06sortedbam/%s"%(project_name)
-newQuantDir="/media/desktop-bi-16/D2C67EE7C67ECAED/BI/08star_salmon/%s"%(project_name)
+maindir="/media/desktop-bi-16/D2C67EE7C67ECAED/BI/"
+
+newTrimDir="%s03trim/%s"%(maindir,project_name)
+newStarDir="%s04sam/%s"%(maindir,project_name)
+newSortBamDir="%s06sortedbam/%s"%(maindir,project_name)
+newQuantDir="%s08star_salmon/%s"%(maindir,project_name)
 
 if os.path.isdir(newTrimDir) == 0:
 	os.system("mkdir %s"%(newTrimDir))
@@ -34,7 +36,7 @@ if os.path.isdir(newQuantDir) == 0:
 	os.system("mkdir %s"%(newQuantDir))
 
 
-ouf=open("/media/desktop-bi-16/D2C67EE7C67ECAED/BI/00script/BI1/run/%sStar%s.sh"%(start,project_name),"w")
+ouf=open("%s00script/BI1/run/%sStar%s.sh"%(maindir,start,project_name),"w")
 
 ### Commands of Trimming with Trim_galore, Mapping with Star ###
 for infile in infFa:
@@ -68,4 +70,3 @@ for infile in trimFa:
 	#print cm_salmon
 
 ouf.close()
-
