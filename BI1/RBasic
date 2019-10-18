@@ -1,0 +1,178 @@
+
+
+
+> head(data_r)
+
+  frame id   x   y dist_vec dist_meter spd_point  spd_mps spd_kph time
+
+1     1  1 360 200     0.00     0.0000     0.000  0.00000  0.0000  0.1
+
+2     2  2 137 117   236.93     1.5874     0.000  0.00000  0.0000  0.2
+
+3     3  2 138 119     2.09     0.0140  2348.334 15.73384 56.6418  0.3
+
+4     4  2 137 121     2.00     0.0134     0.962  0.00645  0.0232  0.4
+
+
+> data_r <- data_r[c(10,1,2,3,4,5,6,7,8,9)]
+
+> head(data_r)
+
+  time frame id   x   y dist_vec dist_meter spd_point  spd_mps spd_kph
+
+1  0.1     1  1 360 200     0.00     0.0000     0.000  0.00000  0.0000
+
+2  0.2     2  2 137 117   236.93     1.5874     0.000  0.00000  0.0000
+
+3  0.3     3  2 138 119     2.09     0.0140  2348.334 15.73384 56.6418
+
+
+
+출처: https://realworld-of-jungryul.tistory.com/13 [rr's Real World]
+
+# ********************************************
+# -- 데이터프레임 생성 (create)
+# ********************************************
+
+# -- Vector이용 객체 생성
+no   = c(1,2,3)
+name = c("hong", "lee", "kim")
+pay  = c(150,250,300)
+df_vemp = data.frame(NO=no, Name=name, Pay=pay)       #컬럼명 지정 
+
+df_vemp
+
+# -- matrix이용 객체 생성
+m = matrix( c(1,"hong",150,
+              2, "lee", 250,
+              3, "kim", 300), 3, by=T)                # 행우선, 3개 리스트 생성
+df_memp = data.frame(m)  
+df_memp
+
+# -- txt파일 이용 객체 생성
+getwd()
+setwd("C:\\Rwork\\Part-I") 
+df_txtemp = read.table('emp.txt', header=T, sep="")   # 제목있음, 공백구분
+
+df_txtemp
+class(df_txtemp)
+
+# -- csv파일 이용 객체 생성
+df_csvtemp = read.csv('emp.csv', header=T)            # 제목있음, 컴마구분
+
+df_csvtemp
+class(df_csvtemp)
+
+# -- data.frame() 사용하여 생성
+df_dirct = data.frame( x=c(1:5), y=seq(2,10,2), z=c('a','b','c','d','e') )
+df_dirct
+
+
+# ********************************************
+# -- 데이터프레임 수정 (alter)
+# ********************************************
+
+# -- 컬럼명이 없는 파일인 경우 컬럼명 추가하여 생성 
+name = c("사번","이름","급여")
+df_colemp = read.csv('emp2.csv', header=F, col.names=name)    
+
+df_colemp
+
+# -- 컬럼명 변경
+name = c("사번","이름","급여")
+df_nocolnm = read.csv('emp2.csv', header=F)    
+
+names(df_nocolnm) <- c("dog","cat")                   # 필드수랑 안 맞으면 NA 처리됨
+names(df_nocolnm)
+
+names(df_nocolnm)[3] <- c("tiger")                    # 특정 필드만 수정
+names(df_nocolnm)[names(df_nocolnm) == "cat"] <- c("야옹이")   
+
+df_nocolnm
+
+# -- 컬럼 추가
+df_nocolnm$new_c1 = NA                                # NA로 신규 컬럼 추가
+df_nocolnm
+
+df_nocolnm[5] = "kk"                                  # 컬럼명 자동 할당
+df_nocolnm
+
+df_nocolnm[100] = "kk"                                # 컬럼 추가시 다음 인덱스 사용 
+
+v = 2:6
+df_nocolnm$new_c2 = v                                 # 임의이 값으로 컬럼 추가
+df_nocolnm
+
+df_nocolnm$new_c3 = df_nocolnm$dog                    # 다른 컬럼을 통해 신규 컬럼 추가 
+df_nocolnm
+
+# -- 컬럼 삭제
+df_nocolnm$new_c3 = NULL
+df_nocolnm
+
+df_nocolnm[5] = NULL
+df_nocolnm
+
+df_nocolnm[4:5] = NULL                                # 여러 컬럼 동시 삭제 
+df_nocolnm
+
+
+# ********************************************
+# -- 데이터프레임 Subset 생성 (create)
+# ********************************************
+x = c(1:5)
+y = c(6:10)
+
+df2 = data.frame(x,y)
+df2
+
+df_x1 = subset(df, x>=3)                              # x가 3이상인 레코드 대상       
+df_x1
+
+df_y1 = subset(df, y<=8)                              # y가 8이하인 레코드 대상 
+df_y1
+
+df_xy1 = subset(df, x>=2 & y>8)                       # 2개 조건이 참인 레코드 대상
+df_xy1
+
+df_xy2 = subset(df, x<=2 | y>8)                       # 2개 조건이 OR인 레코드 대상
+df_xy2
+
+
+# ********************************************
+# -- 데이터프레임 확인 (meta)
+# ********************************************
+
+# -- 로우수, 컬럼수 
+nrow(df_vemp)                                         # number of row count
+ncol(df_vemp)                                         # number of column count
+
+# -- 데이터프레임 확인
+class(df_colemp)
+
+# -- 데이터프레임 컬럼 확인
+names(df_colemp)
+colnames(df_colemp)
+
+# -- 데이터프레임 구조 확인
+names(df_colemp)                                   # 변수명(컬럼)
+attributes(df_colemp)                              # names(), class, row.names
+str(df_colemp)                                     # 데이터 구조보기
+
+
+# ********************************************
+# -- apply() 함수 적용 
+# ********************************************
+
+r1 = c(100,80,90)
+r2 = c(90,80,75)
+r3 = c(86,78,95)    
+df_data = data.frame(c1=r1, c2=r2, c3=r3)
+df_data
+
+# -- apply() 적용 
+apply(df_data, 1, min)     # 열 단위 함수 적용 - 86 78 75
+apply(df_data, 2, min)     # 행 단위 함수 적용 - 80 75 78 
+apply(df_data, 1, var)     # 행 단위 분산 
+apply(df_data, 2, sd)      # 열 단위 표준편차
+
