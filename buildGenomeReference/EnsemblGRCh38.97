@@ -1,4 +1,4 @@
-(star) cytogen-bi2@cytogenbi2-B365M-DS3H:~/00ref/STAR38$ STAR --runThreadN 1 --runMode genomeGenerate --genomeDir /home/cytogen-bi2/00ref/STAR38 --genomeFastaFiles /home/cytogen-bi2/00ref/ensembl/Homo_sapiens.GRCh38.dna.primary_assembly.fa --sjdbGTFfile /home/cytogen-bi2/00ref/ensembl/Homo_sapiens.GRCh38.97.gtf --sjdbOverhang 150
+(star) bi2@bi2-B365M-DS3H:~/00ref/STAR38$ STAR --runThreadN 1 --runMode genomeGenerate --genomeDir ~/00ref/STAR38 --genomeFastaFiles ~/00ref/ensembl/Homo_sapiens.GRCh38.dna.primary_assembly.fa --sjdbGTFfile ~/00ref/ensembl/Homo_sapiens.GRCh38.97.gtf --sjdbOverhang 150
 Oct 25 17:55:16 ..... started STAR run
 Oct 25 17:55:16 ... starting to generate Genome files
 Oct 25 17:55:59 ... starting to sort Suffix Array. This may take a long time...
