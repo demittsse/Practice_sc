@@ -4,16 +4,44 @@
 ##fastq.gz
 import os, glob, time
 start=time.strftime("%y%m%d")
-project_name="06CMC018_019Merge"
+project_name="PBMC3"
 
 ### import input file ###
 
 infFa=glob.glob("/home/cytogen-bi2/01raw/191001_CMC018_019_24eaPairedEnd_48fastq/*_1.fastq")
-trimFa=glob.glob("/media/desktop-bi-16/D2C67EE7C67ECAED/BI/03trim/01SMC1113/*.fq.gz")
+trimFa=glob.glob("/media/desktop-bi-16/D2C67EE7C67ECAED/BI/03trim/02pbmc/PBMC3*_1_val_1.fq.gz")
 ### Create output folder & executable bash file ###
 
 os.system("chmod 777 /home/cytogen-bi2/00script/run/%sTrimStar%s.sh"%(start,project_name))
 maindir="/media/desktop-bi-16/D2C67EE7C67ECAED/BI/"
+
+newKallistoDir="%s07kallisto/%s"%(maindir,project_name)
+if os.path.isdir(newKallistoDir) == 0:
+	os.system("mkdir %s"%(newKallistoDir))
+
+	
+### Commands of Mapping with Star ###
+for infile in trimFa:
+	#print infile
+	#print infile.split("/")[-1].split("_1_val_1.fq.gz")[0]
+	trfq2 = infile.replace("_1_val_1.fq.gz","_2_val_2.fq.gz")
+	cm_kallisto="kallisto quant -i /media/desktop-bi-16/D2C67EE7C67ECAED/BI/07kallisto/Homo_sapiens.GRCh37.75.cdna.ncrna.kalisto.idx -o %s/%s --bias %s %s\n\n\n"%(newKallistoDir,infile.split("/")[-1].split("_1_val_1.fq.gz")[0],infile, trfq2)
+	print cm_kallisto
+	
+	cm_star="/media/desktop-bi-16/D2C67EE7C67ECAED/BI/00source/STAR-2.7.2b/bin/Linux_x86_64_static/./STAR --genomeDir /media/desktop-bi-16/D2C67EE7C67ECAED/BI/02ref/STAR --readFilesIn %s,%s --outFileNamePrefix /media/desktop-bi-16/D2C67EE7C67ECAED/BI/04sam/%s/%s  --runThreadN 1 --outFilterType BySJout --outFilterMultimapNmax 20 --alignSJoverhangMin 8 --alignSJDBoverhangMin 1 --outFilterMismatchNmax 999 --outFilterMismatchNoverReadLmax 0.02 --alignIntronMin 20 --alignIntronMax 1000000 --alignMatesGapMax 1000000 --outSAMtype BAM Unsorted --readFilesCommand gunzip -c\n\n\n"%(infile, trfq2, project_name, infile.split("/")[-1].split("_1_val_1.fq.gz")[0])
+	print cm_star
+	cm_sort="samtools sort /media/desktop-bi-16/D2C67EE7C67ECAED/BI/05bam/%saligned.bam -o /media/desktop-bi-16/D2C67EE7C67ECAED/BI/06sortedbam/%s.sorted.bam\n\n\n"%(infile.split("_1_val_1.fq.gz")[0],infile.split("_1_val_1.fq.gz")[0])
+	print cm_sort
+	cm_salmon="/media/desktop-bi-16/D2C67EE7C67ECAED/BI/00source/salmon-latest_linux_x86_64/bin/./salmon quant -t /media/desktop-bi-16/D2C67EE7C67ECAED/BI/BI/01reference/ensembl/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa -l A -a /media/desktop-bi-16/D2C67EE7C67ECAED/BI/06sortedbam/%s.sorted.bam -o /media/desktop-bi-16/D2C67EE7C67ECAED/BI/08star_salmon/%s\n\n\n" %(infile.split("_1_val_1.fq.gz")[0],infile.split("_1_val_1.fq.gz")[0])
+	print cm_salmon
+	break
+	#ouf.write(cm_trim)
+	ouf.write(cm_star)
+	#ouf.write(cm_salmon)
+	#print cm_salmon
+
+ouf.close()
+
 
 newTrimDir="%s03trim/%s"%(maindir,project_name)
 newStarDir="%s04sam/%s"%(maindir,project_name)
