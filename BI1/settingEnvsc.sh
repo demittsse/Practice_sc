@@ -13,3 +13,8 @@ df3["batch"]=1
 df4["batch"]=2
 
 df5 = cbind(df3,df4)
+
+names<-colnames(df1)
+data = cbind(names)
+
+
