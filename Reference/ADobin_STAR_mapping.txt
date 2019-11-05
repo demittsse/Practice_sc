@@ -1,0 +1,158 @@
+from https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4631051/
+
+Alternate Protocol 7: Mapping RNA-seq reads, generating output in transcriptomic coordinates and using RSEM to quantify expression of transcripts and genes
+
+Quantifying expression of RNA transcripts and genes is one of the most important tasks in the analysis of RNA-seq data. RSEM (Li and Dewey, 2011) is a popular software package capable of quantifying annotated genes and transcripts using RNA-seq data. In this Protocol STAR outputs genomic alignments in transcriptomic coordinates, which are then used by RSEM to produce transcript/gene quantifications.
+Necessary Resources
+
+Hardware
+
+Same as in the Basic Protocol.
+
+Software
+
+Same as in the Basic Protocol, and RSEM 1.2.20. For downloading and installing instructions refer to RSEM web-sites: http://deweylab.biostat.wisc.edu/rsem/ or https://github.com/bli25wisc/RSEM. It is assumed that RSEM is installed in ~/star/code/RSEM-1.2.20
+
+Input files
+
+Same as in the Basic Protocol.
+
+Running a mapping job with transcriptomic output
+
+1. Make a “run directory” for and switch to it:
+
+mkdir ~/star/alt_rsem
+cd ~/star/alt_rsem
+
+2. Map the gzipped FASTQ files located in the ~/star/ directory (see Input Files) outputting unsorted and coordinate-sorted BAMs:
+
+~/star/code/STAR-STAR_2.4.0k/bin/Linux_x86_64/STAR \
+--runThreadN 12 --genomeDir ~/star/genome/ \
+--sjdbGTFfile ~/star/Homo_sapiens.GRCh38.79.gtf --sjdbOverhang 100 \
+--readFilesIn ~/star/ENCFF001RFH.fastq.gz ~/star/ENCFF001RFG.fastq.gz --readFilesCommand zcat \
+--quantMode TranscriptomeSAM
+
+The ---quantMode TranscriptomeSAM option activates the transcriptomic output.
+
+3. All the output files are the same as in Basic Protocol 4-5 with addition to the BAM file in transcriptomic coordinates:
+
+18G Aligned.toTranscriptome.out.bam
+
+Note references in this file are annotated transcript sequences, in contrast to genomic SAM/BAM files in which references are genomic sequences (chromosomes).
+
+4. Prepare the RSEM reference files. This step needs to be done only once for given genome assembly (FASTA) and annotations (GTF).
+
+Make a directory to store RSEM reference files:
+
+mkdir ~/star/rsem_ref
+
+Switch to the RSEM source directory:
+
+cd ~/star/code/RSEM-1.2.20
+
+Run RSEM to prepare the reference file:
+
+./rsem-prepare-reference --gtf ~/star/Homo_sapiens.GRCh38.79.gtf \
+~/star/genome/Homo_sapiens.GRCh38.dna.primary_assembly.fa ./ref
+
+5. Run RSEM quantification on the STAR transcriptomic BAM file:
+
+rsem-calculate-expression --bam --no-bam-output -p 12 --paired-end --forward-prob 0 \
+~/star/alt_rsem/Aligned.toTranscriptome.out.bam ~/star/rsem_ref/ref ~/star/alt_rsem/Quant \
+>& ~/star/alt_rsem/rsem.log
+
+--paired-end --forward-prob 0 options are applicable to paired stranded RNA-seq data such as Illumina stranded Tru-seq protocol. Refer to RSEM documentation for detailed description of RSEM parameters.
+
+-p 12 defines the number of threads used by RSEM.
+
+6. RSEM produces the following files with isoform (transcript) and gene expression levels (refer to RSEM documentation for detailed description of the RSEM output format):
+
+13M Quant.isoforms.results
+5.7M Quant.genes.results
+
+Go to:
+Alternate Protocol 8: Mapping RNA-seq reads and running Cufflinks to assemble and quantify transcripts for stranded RNA-seq data
+
+Cufflinks (Trapnell et al 2010) is a popular software package for assembly and quantification of transcript using RNA-seq data. In this protocol STAR outputs BAM file with coordinate-sorted alignments, which is then used by Cufflinks to assemble and quantify novel transcript structures. This Protocol works with stranded RNA-seq data, such as Illumina stranded Tru-Seq protocol. For un-stranded RNA-seq data see the Alternate Protocol 8.
+Necessary Resources
+
+Hardware
+
+Same as in the Basic Protocol.
+
+Software
+
+Same as in the Basic Protocol, plus Cufflinks 2.2.1. To download and install Cufflinks into ~/star/code/directory:
+
+cd ~/star/code
+wget http://cole-trapnell-lab.github.io/cufflinks/assets/downloads/cufflinks-2.2.1.Linux_x86_64.tar.gz
+tar xvfz cufflinks-2.2.1.Linux_x86_64.tar.gz
+
+Input files
+
+Same as in the Basic Protocol.
+
+Generating the coordinate-sorted BAM file and running Cufflinks transcript assembly and quantification
+
+1. Follow Alternate Protocol 3 to produce the Aligned.sortedByCoord.out.bam file. If you do not require unsorted BAM file, use --outSAMtype BAM SortedByCoordinate option to generate only the coordinate-sorted file.
+
+2. In the STAR run directory ~/star/alt_bam/, run the basic Cufflinks command:
+
+cd ~/star/alt_bam
+~/star/code/cufflinks-2.2.1.Linux_x86_64/cufflinks -p 12 --library-type fr-firststrand \
+Aligned.sortedByCoord.out.bam
+
+-p 12 defines the number of threads used by Cufflinks.
+
+--library-type fr-firststrand parameter has to be chosen according to the RNA-seq library protocol. Use fr-firststrand option for the protocols in which the 1st read is on the opposite strand to the RNA molecule (such as Illumina stranded Tru-Seq). Use fr-secondstrand for the protocols in which the 1st read is on the same strand as the RNA molecule. For un-stranded RNA-seq data use Alternative Protocol 8. For other library types, refer to Cufflinks documentation.
+
+3. Cufflinks generates the following output:
+
+89M transcripts.gtf
+8.1M genes.fpkm_tracking
+11M isoforms.fpkm_tracking
+
+The first file contains transcripts assembled from the RNA-seq data, while the 2nd and 3rd files contain tables of gene and transcript-level expression. For a description of output formats, as well as advanced Cufflinks options, please refer to the Cufflinks documentation: http://cole-trapnell-lab.github.io/cufflinks/cufflinks/index.html
+Go to:
+Alternate Protocol 9: Mapping RNA-seq reads and running Cufflinks to assemble and quantify transcripts for un-stranded RNA-seq data
+
+Cufflinks (Trapnell et al 2010) is a popular software package for assembly and quantification of transcript using RNA-seq data. In this protocol STAR outputs BAM file with coordinate-sorted alignments, which is then used by Cufflinks to assemble and quantify novel transcript structures. This Protocol works with un-stranded RNA-seq data. For stranded RNA-seq data see the Alternate Protocol 7.
+Necessary Resources
+
+Hardware
+
+Same as in the Basic Protocol.
+
+Software
+
+Same as in the Alternate Protocol 7.
+
+Input files
+
+Same as in the Basic Protocol.
+
+Generating the coordinate-sorted BAM file and running Cufflinks transcript assembly and quantification
+
+1. Make a run directory and switch to it:
+
+mkdir ~/star/alt_cuff-unstr
+cd ~/star/alt_cuff-unstr
+
+2. Map the FASTQ files located in the ~/star/directory (see Input Files) outputting coordinate-sorted BAM:
+
+~/star/code/STAR-STAR_2.4.0k/bin/Linux_x86_64/STAR\
+--runThreadN 12 --genomeDir ~/star/genome/ \
+--sjdbGTFfile ~/star/Homo_sapiens.GRCh38.79.gtf --sjdbOverhang 100 \
+--readFilesIn ~/star/ENCFF001RFH.fastq.gz ~/star/ENCFF001RFG.fastq.gz --readFilesCommand zcat \
+--outSAMtype BAM SortedByCoordinate Unsorted \
+--outSAMstrandField intronMotif
+
+--outSAMstrandField intronMotif option adds an XS attribute to the spliced alignments in the BAM file, which is required by Cufflinks for unstranded RNA-seq data.
+
+2. In the same directory run the basic Cufflinks command:
+
+~/star/code/cufflinks-2.2.1.Linux_x86_64/cufflinks -p 12 Aligned.sortedByCoord.out.bam
+
+-p 12 defines the number of threads used by Cufflinks.
+
+3. Cufflinks output files are described in Alternative Protocol 7.
