@@ -32,7 +32,7 @@ conda install -c bioconda kallisto
 y
 
 
-conda create -n scrna hisat2 rsem rseqc multiqc qualimap htseq r-seurat trim-falore samtools salmon kallisto 
+conda create -n scrna hisat2 rsem rseqc multiqc qualimap htseq r-seurat trim-galore samtools salmon kallisto 
 
 
 (base) cytogenbi2@cytogenbi2-B365M-DS3H:~$ conda config --add channels defaults
