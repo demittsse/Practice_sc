@@ -30,7 +30,8 @@ y
 
 conda install -c bioconda kallisto
 y
-
+conda install -c bioconda igv
+y
 
 conda create -n scrna hisat2 rsem rseqc multiqc qualimap htseq r-seurat trim-galore samtools salmon kallisto 
 
