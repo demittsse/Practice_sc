@@ -1,3 +1,38 @@
+https://bioconda.github.io/user/install.html
+
+
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+sh Miniconda3-latest-Linux-x86_64.sh
+
+
+
+conda create -n aligners bwa bowtie hisat star rsem
+
+conda install -c bioconda hisat2
+y
+conda install -c bioconda rsem
+y
+conda install -c bioconda rseqc
+y
+conda install -c bioconda multiqc
+y
+conda install -c bioconda qualimap
+y
+conda install -c bioconda htseq
+y
+conda install -c bioconda r-seurat 
+y
+conda install -c bioconda trim-galore
+y
+#conda install -c bioconda samtools
+conda install -c bioconda salmon
+y
+
+conda install -c bioconda kallisto
+y
+
+
+
 (base) cytogenbi2@cytogenbi2-B365M-DS3H:~$ conda config --add channels defaults
 Warning: 'defaults' already in 'channels' list, moving to the top
 (base) cytogenbi2@cytogenbi2-B365M-DS3H:~$ conda config --add channels bioconda
