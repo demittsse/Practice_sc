@@ -5,6 +5,16 @@ https://bioconda.github.io/user/install.html
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 sh Miniconda3-latest-Linux-x86_64.sh
 
+(base) cytogenbi2@cytogenbi2-B365M-DS3H:~$ conda config --add channels defaults
+Warning: 'defaults' already in 'channels' list, moving to the top
+(base) cytogenbi2@cytogenbi2-B365M-DS3H:~$ conda config --add channels bioconda
+(base) cytogenbi2@cytogenbi2-B365M-DS3H:~$ conda config --add channels conda-forge
+(base) cytogenbi2@cytogenbi2-B365M-DS3H:~$ conda create -n aligners bwa bowtie hisat star rsem
+Collecting package metadata (current_repodata.json): done
+Solving environment: failed with repodata from current_repodata.json, will retry with next repodata source.
+Collecting package metadata (repodata.json): done
+Solving environment: failed
+
 
 
 conda create -n aligners bwa bowtie hisat star rsem
@@ -37,15 +47,7 @@ y
 conda create -n scrna star hisat2 rsem rseqc multiqc qualimap htseq r-seurat trim-galore samtools salmon kallisto igv
 
 
-(base) cytogenbi2@cytogenbi2-B365M-DS3H:~$ conda config --add channels defaults
-Warning: 'defaults' already in 'channels' list, moving to the top
-(base) cytogenbi2@cytogenbi2-B365M-DS3H:~$ conda config --add channels bioconda
-(base) cytogenbi2@cytogenbi2-B365M-DS3H:~$ conda config --add channels conda-forge
-(base) cytogenbi2@cytogenbi2-B365M-DS3H:~$ conda create -n aligners bwa bowtie hisat star rsem
-Collecting package metadata (current_repodata.json): done
-Solving environment: failed with repodata from current_repodata.json, will retry with next repodata source.
-Collecting package metadata (repodata.json): done
-Solving environment: failed
+
 
 PackagesNotFoundError: The following packages are not available from current channels:
 
