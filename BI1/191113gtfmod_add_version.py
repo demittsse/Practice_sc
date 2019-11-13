@@ -1,3 +1,5 @@
+# afp://mglee@DiskStation.local/바이오연구소/팀내%20공유%20폴더/바이오3팀/개인폴더/이명교/Code/ref
+
 #PC1
 inf1=open("/media/cytogenbi1/D2C67EE7C67ECAED/BI/02ref/ensembl38.97/Homo_sapiens.GRCh38.97.gtf")
 lines=inf1.readlines()
