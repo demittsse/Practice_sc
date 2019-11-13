@@ -1,33 +1,63 @@
-#===================================================================================
-##Example IDs (file): [ENST00000631435.1, ENST00000434970.2, ENST00000448914.1, ...]
-#===================================================================================
-
-#PC2
-inf1=open("/home/cytogenbi2/00ref/ensembl/GRCh38/Homo_sapiens.GRCh38.97.gtf")
 #PC1
 inf1=open("/media/cytogenbi1/D2C67EE7C67ECAED/BI/02ref/ensembl38.97/Homo_sapiens.GRCh38.97.gtf")
 lines=inf1.readlines()
-for line in lines:
-	if "#!" in line:
-		continue
-	print line
+
 inf1.close()
 
 
-n=0
-for line in inf1:
-	n+=1	
-	if "#!" in line:
+llist=[]
+for num in range(5,len(lines)):
+	line=lines[num]
+	if "transcript_id" in line:
+		chrnum=line.split("\t")[0]
+		info=line.split("\t")[8]
+		gene_id=info.split('gene_id "')[1].split('";')[0]
+		gene_version=info.split('gene_version "')[1].split('";')[0]
+		transcript_id=info.split('transcript_id "')[1].split('";')[0]
+		transcript_version=info.split('transcript_version "')[1].split('";')[0]
+		lline1="%s\t%s.%s\t%s.%s\n"%(chrnum, gene_id, gene_version, transcript_id,transcript_version)
+		llist.append(lline1)
+	else:
 		continue
-	try:
-		if len(line.split("/t")[1])>=1:
-			print line.split("/t")
-		elif n>10:
-			break
-	 
-	
-	except IndexError:
-		print "IndexError"
 
-['KI270713.1', 'ensembl', 'stop_codon', '35914', '35916', '.', '+', '0', 'gene_id "ENSG00000268674"; gene_version "2"; transcript_id "ENST00000601199"; transcript_version "2"; exon_number "1"; gene_name "AC213203.1"; gene_source "ensembl"; gene_biotype "protein_coding"; transcript_name "AC213203.1-201"; transcript_source "ensembl"; transcript_biotype "protein_coding"; tag "basic"; transcript_support_level "NA";\n']
+ouf=open("/media/cytogenbi1/D2C67EE7C67ECAED/BI/02ref/ensembl38.97/tx2geneWthversion.txt","w")
+ouf.write("".join(llist))
 
+
+llist2=[]
+for num in range(5,len(lines)):
+	line=lines[num]
+	if "transcript_id" in line:
+		chrnum=line.split("\t")[0]
+		info=line.split("\t")[8]
+		gene_id=info.split('gene_id "')[1].split('";')[0]
+		gene_version=info.split('gene_version "')[1].split('";')[0]
+		transcript_id=info.split('transcript_id "')[1].split('";')[0]
+		transcript_version=info.split('transcript_version "')[1].split('";')[0]
+		lline1="%s\t%s\t%s\n"%(chrnum, gene_id, transcript_id)
+		llist2.append(lline1)
+	else:
+		print(line)
+
+
+ouf=open("/media/cytogenbi1/D2C67EE7C67ECAED/BI/02ref/ensembl38.97/tx2geneNOversion.txt","w")
+ouf.write("".join(llist2))
+
+
+#=======================  test  ======================= #
+num=2877401
+line=lines[num]
+chrnum=line.split("\t")[0]
+print(chrnum)
+info=line.split("\t")[8]
+gene_id=info.split('gene_id "')[1].split('";')[0]
+print(gene_id)
+gene_version=info.split("gene_version "")[1].split("";")[0]
+print(gene_version)
+transcript_id=info.split("transcript_id "")[1].split("";")[0]
+print(transcript_id)
+transcript_version=info.split("transcript_version "")[1].split("";")[0]
+print(transcript_version)
+lline1="%s\t%s.%s\t%s.%s\n"%(chrnum, gene_id, gene_version, transcript_id,transcript_version)
+
+#======================================================= #
