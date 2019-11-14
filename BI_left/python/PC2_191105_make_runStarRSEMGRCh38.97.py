@@ -27,21 +27,28 @@ trim5=glob.glob("/home/cytogen-bi2/03trim/03H69C1/*_1_val_1.fq.gz")
 print len(trim5)
 
 ## check every file processed for each step ; check "/" after path
-def compRaw(rawpath,expath):
+rawfile_Extension="_1.fastq"
+trimfile_Extension="_1_val_1.fq.gz"
+rsemQuant_Extension="scQuant.genes.results"
+def compRaw(merge,rawPath,rawExtension,outPath,outExtension):
 	import glob
-	trim=glob.glob("%s*_1_val_1.fq.gz"%(expath))
-	trimsample=[a.split("/")[-1].split("_1_val_1.fq.gz")[0] for a in trim]
-	raw=glob.glob("%s*_1.fastq*"%(rawpath))
-	rawsample=[r.split("/")[-1].split("_1.fastq")[0] for r in raw]
-	trimset=set(trimsample)
-	missing=[x for x in rawsample if x not in trimset]
-	misPath=[line for line in missing if line in trim]
-	print ",".join(missing)
-	print "\n".join(misPath)
+	outFiles=glob.glob("%s*%s"%(outPath,outExtension))
+	outsample=[a.split("/")[-1].split(outExtension)[0] for a in outFiles]
+	if merge == 0:
+		raw=glob.glob("%s*%s*"%(rawPath, rawExtension))
+	elif merge == 1:
+		raw=rawPath
+	rawsample=[r.split("/")[-1].split(rawExtension)[0] for r in raw]
+	outset=set(outsample)
+	missing=[x for x in rawsample if x not in outset]
+	misPath=[line for line in missing if line in outFiles]
+	print(",".join(missing))
+	print("\n".join(misPath))
 	return "\n".join(misPath)
 
-expath1="/home/cytogen-bi2/03trim/03H69plate/"
-rawpath1="/home/cytogen-bi2/01raw/NCI_H69_platebased_190614/"
+
+compRaw(1,trimFa, "_1_val_1.fq.gz", "/dt2/04rsem/06ENS3803_191111/", "scQuant.genes.results")
+
 
 trimFa=trim1+trim2+trim3+trim4+trim5
 print "trimFa length = ", len(trimFa)
