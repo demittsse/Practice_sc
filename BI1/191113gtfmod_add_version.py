@@ -42,7 +42,7 @@ for num in range(5,len(lines)):
 		print(line)
 
 
-ouf=open("/media/cytogenbi1/D2C67EE7C67ECAED/BI/02ref/ensembl38.97/modGTF38/tx2geneNOversion.txt","w")
+ouf=open("/media/cytogenbi1/D2C67EE7C67ECAED/BI/02ref/ensembl38.97/modGTF38/tx2geneEXversion.txt","w")
 ouf.write("".join(llist2))
 
 
