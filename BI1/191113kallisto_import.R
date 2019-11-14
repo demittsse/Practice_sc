@@ -10,7 +10,7 @@ BiocManager::install("rhdf5")
 
 library(tximport)
 
-df1<-read.table("/media/cytogenbi1/D2C67EE7C67ECAED/BI/07salmon/gtfgtmod2.txt")
+df1<-read.table("/media/cytogenbi1/D2C67EE7C67ECAED/BI/02ref/ensembl38.97/tx2geneWthversion.txt")
 names(df1)<-c("chr", "TXNAME", "GENEID")
 tx2gene <- df1[,c(3,2)]
 
@@ -45,6 +45,7 @@ head(txi$counts)
 
 write.csv(as.data.frame(txi$counts), 
           file="/media/desktop-bi-16/D2C67EE7C67ECAED/BI/07kallisto/191029CMCPBMC_seuratTPM.csv")
+setwd("/media/cytogenbi1/D2C67EE7C67ECAED/BI/07kallisto/")
 
 ##################################################################
 library(stringr)
