@@ -4,7 +4,7 @@
 inputTPM="/media/cytogenbi1/D2C67EE7C67ECAED/BI/07kallisto/results/191114CMC11_19kallisto_raw.csv"
 def ENSG2GeneName(inputTPM):
 	import os
-	file1="/media/cytogenbi1/D2C67EE7C67ECAED/BI/02ref/ensembl38.97/GeneE38_97EXversion.txt"
+	file1="/media/cytogenbi1/D2C67EE7C67ECAED/BI/02ref/ensembl38.97/GeneE38_97Wthversion.txt"
 	file2="/dt1/00ref/modGTF38/GeneE38_97Wthversion.txt"
 	if os.path.isfile(file1):
 		inf1=open(file1)
