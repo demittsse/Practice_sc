@@ -1,10 +1,13 @@
+#======================================================================================#
+# Reference
+# https://bioconda.github.io/user/install.html
+#======================================================================================#
 
-https://bioconda.github.io/user/install.html
-
-
+# download latest miniconda file
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 sh Miniconda3-latest-Linux-x86_64.sh
 
+#conda config channels example from bioconda home-page 
 (base) cytogenbi2@cytogenbi2-B365M-DS3H:~$ conda config --add channels defaults
 Warning: 'defaults' already in 'channels' list, moving to the top
 (base) cytogenbi2@cytogenbi2-B365M-DS3H:~$ conda config --add channels bioconda
@@ -16,8 +19,8 @@ Collecting package metadata (repodata.json): done
 Solving environment: failed
 
 
-
-conda create -n aligners bwa bowtie hisat star rsem
+# install programs
+#conda create -n aligners bwa bowtie hisat star rsem
 
 conda install -c bioconda hisat2
 y
@@ -45,10 +48,11 @@ conda install -c bioconda igv
 y
 conda install -c bioconda bioconductor-deseq2
 
-
+# create "scrna" env
 conda create -n scrna star hisat2 rsem rseqc multiqc qualimap htseq r-seurat trim-galore samtools salmon kallisto igv bioconductor-deseq2
 
-
+#======================================================================================#
+# log of installation 
 (base) cytogenbi1@cytogenbi1-H110M-DS2V:/media/cytogenbi1/D2C67EE7C67ECAED/BI/02ref/ensembl38.97/modGTF38$ conda create -n scrna star hisat2 rsem rseqc multiqc qualimap htseq r-seurat trim-galor
 e samtools salmon kallisto igv bioconductor-deseq2
 WARNING: A conda environment already exists at '/home/cytogenbi1/miniconda3/envs/scrna'
