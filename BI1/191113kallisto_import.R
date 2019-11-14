@@ -45,8 +45,8 @@ head(txi$counts)
 
 write.csv(as.data.frame(txi$counts), 
           file="/media/desktop-bi-16/D2C67EE7C67ECAED/BI/07kallisto/191029CMCPBMC_seuratTPM.csv")
-setwd("/media/cytogenbi1/D2C67EE7C67ECAED/BI/07kallisto/")
-
+setwd("/media/cytogenbi1/D2C67EE7C67ECAED/BI/07kallisto/results")
+write.csv(as.data.frame(txi$counts), file="191114CMC11_19kallisto_raw.csv")
 ##################################################################
 library(stringr)
 resd1<-read.csv(file = '/media/desktop-bi-16/D2C67EE7C67ECAED/BI/07salmon/04cmcpbmc/results/191016CMC011013018019_ENSG.csv',row.names=1, sep = ",", header=T)
