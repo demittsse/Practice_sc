@@ -1,3 +1,4 @@
+#! Edited 2019.11.15
 #================================================================================================================
 ## trimming & Star mapping ENSEMBL 38.97 # samtools 1.9
 #================================================================================================================
@@ -56,11 +57,11 @@ print "sum of trim1...trimN = ", len(trim1)+len(trim2)+len(trim3)+len(trim4)+len
 ### Create output folder & executable bash file ###
 
 #os.system("chmod 777 /home/cytogen-bi2/00script/BI_left/run/%sTrimStar%s.sh"%(start,project_name))
-newTrimDir="/home/cytogen-bi2/02trim/%s"%(project_name)
-newStarDir="/home/cytogen-bi2/03star/%s"%(project_name)
-newBamDir="/home/cytogen-bi2/04bam/%s"%(project_name)
-newSortDir="/home/cytogen-bi2/04sort/%s"%(project_name)
-newQuantDir="/home/cytogen-bi2/05rsem/%s"%(project_name)
+maindir="/dt2/"
+newTrimDir="%s02trim/%s"%(maindir,project_name)
+newStarDir="%s03star/%s"%(maindir,project_name)
+newQualiDir="%s03qualimap/%s"%(maindir,project_name)
+newRsemDir="%s04rsem/%s"%(maindir,project_name)
 #newQuantDir="/home/cytogen-bi2/04star_salmon/%s"%(project_name)
 
 ##make trim directory
@@ -70,44 +71,56 @@ if os.path.isdir(newTrimDir) == 0:
 if os.path.isdir(newStarDir) == 0:
 	os.system("mkdir %s"%(newStarDir))
 
-if os.path.isdir(newBamDir) == 0:
-	os.system("mkdir %s"%(newBamDir))
+if os.path.isdir(newQualiDir) == 0:
+	os.system("mkdir %s"%(newQualiDir))
 
-if os.path.isdir(newSortDir) == 0:
-	os.system("mkdir %s"%(newSortDir))
-
-if os.path.isdir(newQuantDir) == 0:
-	os.system("mkdir %s"%(newQuantDir))
+if os.path.isdir(newRsemDir) == 0:
+	os.system("mkdir %s"%(newRsemDir))
 
 
 #================================================================================================================
 ##Create ouput file
 #================================================================================================================
 
-ouf=open("/home/cytogen-bi2/00script/BI_left/run/%sTrimStar%s.sh"%(start,project_name),"w")
-conda activate starrsem
+ouf=open("/home/cytogenbi2/00script/BI_left/run/%s%s.sh"%(start,project_name),"w")
+# conda activate scrna
 
 #================================================================================================================
 ### Commands of Trimming with Trim_galore, Mapping with Star ###
 #================================================================================================================
+maindir="/dt2/"
+newTrimDir="%s02trim/%s"%(maindir,project_name)
+newStarDir="%s03star/%s"%(maindir,project_name)
+newQualiDir="%s03qualimap/%s"%(maindir,project_name)
+newRsemDir="%s04rsem/%s"%(maindir,project_name)
+
+genomeDir=maindir+"/00ref/STAR38" 
+sjdbGTFfile=maindir+"/00ref/ensembl/GRCh38/Homo_sapiens.GRCh38.97.gtf"
+rsemrefDir=maindir+"00ref/STAR38/RSEM"
 
 lineNum=0
 for infile in trimFa:
 	lineNum+=1
-	if lineNum == 1:
-		continue
+	if lineNum == 1: continue
 	print "#",lineNum	
 	trfq2 = infile.replace("_1_val_1.fq.gz","_2_val_2.fq.gz")
 	sample = infile.split("/")[-1].split("_1_val_1.fq.gz")[0]
-	star_out_file="/home/cytogen-bi2/03star/%s/%s"%(project_name, sample)
-	rsem_out_file="/home/cytogen-bi2/05rsem/%s/%s"%(project_name, sample)
-	cm_trimmed_star="STAR --runThreadN 2 --genomeDir /home/cytogen-bi2/00ref/STAR38 --sjdbGTFfile /home/cytogen-bi2/00ref/ensembl/GRCh38/Homo_sapiens.GRCh38.97.gtf --sjdbOverhang 150 --outFilterType BySJout --outFilterMultimapNmax 20 --alignSJoverhangMin 8 --alignSJDBoverhangMin 1 --outFilterMismatchNmax 999 --outFilterMismatchNoverReadLmax 0.02 --alignIntronMin 20 --outFileNamePrefix %s --alignIntronMax 1000000 --alignMatesGapMax 1000000 --readFilesIn %s,%s --readFilesCommand zcat --quantMode TranscriptomeSAM\n\n\n"%(star_out_file, infile, trfq2)
-	cm_rsem="rsem-calculate-expression --bam --no-bam-output --single-cell-prior -p 1 %sAligned.toTranscriptome.out.bam /home/cytogen-bi2/00ref/STAR38/RSEM %sscQuant> %scrsem.log\n\n\n"%(star_out_file, rsem_out_file, rsem_out_file)
-	print cm_trimmed_star
-	print cm_rsem
-	break
+	star_out_file="%s/%s/%s"%(newStarDir,project_name, sample)
+	quali_out_dir="%s/%s/%s"%(newQualiDir,project_name, sample)
+	rsem_out_file="%s/%s/%s"%(newRsemDir,project_name, sample)
+	cm_trimmed_star="STAR --runThreadN 2 --genomeDir %s --sjdbGTFfile %s --sjdbOverhang 150 --outFilterType BySJout --outFilterMultimapNmax 20 --alignSJoverhangMin 8 --alignSJDBoverhangMin 1 --outFilterMismatchNmax 999 --outFilterMismatchNoverReadLmax 0.02 --alignIntronMin 20 --outFileNamePrefix %s --alignIntronMax 1000000 --alignMatesGapMax 1000000 --readFilesIn %s,%s --readFilesCommand zcat --quantMode TranscriptomeSAM\n\n\n"%(str(genomeDir), str(sjdbGTFfile), star_out_file, infile, trfq2)
+	cm_qualimap="qualimap rnaseq -outdir %s -a proportional -bam %sAligned.out.sam -gtf %s --java-mem-size=8G \n\n\n"%(quali_out_dir, star_out_file,sjdbGTFfile)
+	cm_rsem="rsem-calculate-expression --bam --no-bam-output --single-cell-prior -p 1 %sAligned.toTranscriptome.out.bam %s %sscQuant> %scrsem.log\n\n\n"%(star_out_file, str(rsemrefDir), rsem_out_file, rsem_out_file)
+	print(cm_trimmed_star)
+	print(cm_qualimap)
+	print(cm_rsem)
+
 	ouf.write(cm_trimmed_star)
+	ouf.write("echo %s %s star alignment done!\n"%(project_name, sample))
+	ouf.write(cm_qualimap)
+	ouf.write("echo %s %s Qualimap done!\n"%(project_name, sample))
 	ouf.write(cm_rsem)
+	ouf.write("echo %s %s rsem done!\n"%(project_name, sample))
 
 ouf.close()
 
