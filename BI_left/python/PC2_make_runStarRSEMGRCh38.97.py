@@ -86,8 +86,8 @@ if os.path.isdir(newLogDir) == 0:
 #================================================================================================================
 ##Create ouput file
 #================================================================================================================
-
-ouf=open("/home/cytogenbi2/00script/BI_left/run/qualimap%s.sh"%(project_name),"w")
+oufname="/home/cytogenbi2/00script/BI_left/run/%s.sh"%(project_name)
+ouf=open(oufname,"w")
 # conda activate scrna
 
 #================================================================================================================
@@ -131,10 +131,10 @@ ouf.close()
 
 os.system("chmod 755 /home/cytogenbi2/00script/BI_left/run/qualimap%s.sh"%(project_name))
 
-print("tail /home/cytogenbi2/00script/BI_left/run/qualimap%s.sh"%(project_name))
-print("/home/cytogenbi2/00script/BI_left/run/./%squalimap%s.sh>%s/%sTrimStar.log"%(start,project_name,newLogDir, project_name))
+print("tail %s"%(ouf_name))
+print("%s>%s/%.log"%(ouf_name,newLogDir, project_name))
 
-print("tail -f %s/%sTrimStar.log"%(newLogDir,project_name))
+print("%s>%s/%.log"%(ouf_name,newLogDir, project_name))
 
 
 
