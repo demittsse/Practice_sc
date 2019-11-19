@@ -16,16 +16,16 @@ project_name="06ENS3803_%s"%(start)
 infFa=glob.glob("/home/cytogen-bi2/01raw/191001_CMC018_019_24eaPairedEnd_48fastq/*_1.fastq")
 
 #trimmed
-
-trim1=glob.glob("/dt1/03trim/01CMC1113/*_1_val_1.fq.gz")
+maindir="/media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a"
+trim1=glob.glob("%s/03trim/01CMC1113/*_1_val_1.fq.gz"%maindir)
 print(len(trim1))
-trim2=glob.glob("/dt1/03trim/02pbmc/*_1_val_1.fq.gz")
+trim2=glob.glob("%s/03trim/02pbmc/*_1_val_1.fq.gz"%maindir)
 print(len(trim2))
-trim3=glob.glob("/dt1/03trim/03H69plate/*_1_val_1.fq.gz")
+trim3=glob.glob("%s/03trim/03H69plate/*_1_val_1.fq.gz"%maindir)
 print(len(trim3))
-trim4=glob.glob("/dt1/03trim/04CMC1819/*_1_val_1.fq.gz")
+trim4=glob.glob("%s/03trim/04CMC1819/*_1_val_1.fq.gz"%maindir)
 print(len(trim4))
-trim5=glob.glob("/dt1/03trim/03H69C1/*_1_val_1.fq.gz")
+trim5=glob.glob("%s/03trim/03H69C1/*_1_val_1.fq.gz"%maindir)
 print(len(trim5))
 
 ## check every file processed for each step ; check "/" after path
