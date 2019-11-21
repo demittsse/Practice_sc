@@ -1,3 +1,42 @@
+"""
+CMC-011_08​
+CMC-011_19​
+CMC-011_33​
+CMC-011_49​
+CMC-011_58​
+CMC-011_59​
+CMC-011_60​
+PBMC3-34
+"""
+cmc2=cmc1[c("CMC-011_08","CMC-011_19","CMC-011_33", "CMC-011_49", "CMC-011_58", "CMC-011_59","CMC-011_60","PBMC3-34")]
+
+write.csv(cmc2,file="/dt2/04rsem/06ENS3803_Merge191120/191121rsemTPMcellFiltered/191121filterRsemTPMENSG.csv")
+
+
+############
+geneOnly<-read.csv("/dt2/04rsem/06ENS3803_Merge191120/191120rsemTPMENSG_geneAnno.csv",header = T)
+
+geneWrite<-geneOnly[c("None","CMC.011_08","CMC.011_19","CMC.011_33", "CMC.011_49", "CMC.011_58", "CMC.011_59","CMC.011_60","PBMC3.34")]
+
+names(geneWrite)[1]<-paste("Gene")
+
+write.csv(geneWrite,file="/dt2/04rsem/06ENS3803_Merge191120/191121rsemTPMcellFiltered/191121filterRsemTPMGene.csv",row.names=FALSE)
+
+
+############
+gene_ENSG<-read.csv("/dt2/04rsem/06ENS3803_Merge191120/191120rsemTPMENSG_gene_ENSGAnno.csv",header = T)
+
+gene_ENSGWrite<-gene_ENSG[c("None_","CMC.011_08","CMC.011_19","CMC.011_33", "CMC.011_49", "CMC.011_58", "CMC.011_59","CMC.011_60","PBMC3.34")]
+
+names(gene_ENSGWrite)[1]<-paste("Gene")
+
+write.csv(gene_ENSGWrite,file="/dt2/04rsem/06ENS3803_Merge191120/191121rsemTPMcellFiltered/191121filterRsemTPMGene_ENSG.csv",row.names=FALSE)
+
+
+#===================================================================================================#
+191008selectSample.R
+#===================================================================================================#
+
 #df1<-read.table("/home/cytogen-bi2/analysis/CMCfiltered191008plus.csv",header = T, row.names = 1)
 df2<-read.csv("/home/cytogen-bi2/analysis/CMCfiltered191008plus.csv",header = T, row.names = 1)
 
