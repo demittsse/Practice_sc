@@ -34,7 +34,7 @@ write.csv(gene_ENSGWrite,file="/dt2/04rsem/06ENS3803_Merge191120/191121rsemTPMce
 
 
 #===================================================================================================#
-191008selectSample.R
+# 191008selectSample.R
 #===================================================================================================#
 
 #df1<-read.table("/home/cytogen-bi2/analysis/CMCfiltered191008plus.csv",header = T, row.names = 1)
