@@ -15,16 +15,18 @@ project_name="kallisto38_%s"%(start)
 #infFa=glob.glob("/home/cytogen-bi2/01raw/191001_CMC018_019_24eaPairedEnd_48fastq/*_1.fastq")
 #trimFa=glob.glob("/media/desktop-bi-16/D2C67EE7C67ECAED/BI/03trim/02pbmc/PBMC3*_1_val_1.fq.gz")
 
-trim1=glob.glob("/media/desktop-bi-16/D2C67EE7C67ECAED/BI/03trim/01CMC1113/*_1_val_1.fq.gz")
-print len(trim1)
-trim2=glob.glob("/media/desktop-bi-16/D2C67EE7C67ECAED/BI/03trim/02pbmc/*_1_val_1.fq.gz")
-print len(trim2)
-trim3=glob.glob("/media/desktop-bi-16/D2C67EE7C67ECAED/BI/03trim/03plate/*_1_val_1.fq.gz")
-print len(trim3)
-trim4=glob.glob("/media/desktop-bi-16/D2C67EE7C67ECAED/BI/03trim/04CMC1819/*_1_val_1.fq.gz")
-print len(trim4)
-trim5=glob.glob("/media/desktop-bi-16/D2C67EE7C67ECAED/BI/03trim*_1_val_1.fq.gz")
-print len(trim5)
+maindir="/media/cytogenbi1/D2C67EE7C67ECAED/BI"
+trim1=glob.glob("%s/03trim/01CMC1113/*_1_val_1.fq.gz"%maindir)
+print(len(trim1))
+trim2=glob.glob("%s/03trim/02pbmc/*_1_val_1.fq.gz"%maindir)
+print(len(trim2))
+trim3=glob.glob("%s/03trim/03H69plate/*_1_val_1.fq.gz"%maindir)
+print(len(trim3))
+trim4=glob.glob("%s/03trim/04CMC1819/*_1_val_1.fq.gz"%maindir)
+print(len(trim4))
+trim5=glob.glob("%s/03trim/03H69C1/*_1_val_1.fq.gz"%maindir)
+print(len(trim5))
+
 
 #trimFa=trim1+trim2+trim3+trim4+trim5
 trimFa=trim1+trim4
@@ -33,8 +35,7 @@ print "sum of trim1...trimN = ", len(trim1)+len(trim2)+len(trim3)+len(trim4)+len
 
 ### Create output folder & executable bash file ###
 
-maindir="/media/desktop-bi-16/D2C67EE7C67ECAED/BI/"
-
+maindir="/media/cytogenbi1/D2C67EE7C67ECAED/BI/"
 newKallistoDir="%s07kallisto/%s"%(maindir,project_name)
 if os.path.isdir(newKallistoDir) == 0:
 	os.system("mkdir %s"%(newKallistoDir))
@@ -50,13 +51,13 @@ for infile in trimFa:
 	#print infile
 	#print infile.split("/")[-1].split("_1_val_1.fq.gz")[0]
 	trfq2 = infile.replace("_1_val_1.fq.gz","_2_val_2.fq.gz")
-	cm_kallisto="kallisto quant -i /media/desktop-bi-16/D2C67EE7C67ECAED/BI/02ref/kallisto/kallisto.ref.Ens38.96.idx -o %s/%s --bias %s %s\n\n\n"%(newKallistoDir,infile.split("/")[-1].split("_1_val_1.fq.gz")[0],infile, trfq2)
-	print cm_kallisto
+	cm_kallisto="kallisto quant -i /%s02ref/kallisto/kallisto.ref.Ens38.96.idx -o %s/%s --bias %s %s\n\n\n"%(maindir,newKallistoDir,infile.split("/")[-1].split("_1_val_1.fq.gz")[0],infile, trfq2)
+	print(cm_kallisto)
 	ouf.write(cm_kallisto)
 
 
 ouf.close()
 os.system("chmod 777 %s00script/BI1/run/runKallisto_%s.sh"%(maindir,project_name))
-print "%s00script/BI1/run/runKallisto_%s.sh"%(maindir,project_name)
+print("%s00script/BI1/run/runKallisto_%s.sh"%(maindir,project_name))
 	
 
