@@ -49,7 +49,7 @@ y
 conda install -c bioconda bioconductor-deseq2
 
 # create "scrna" env
-conda create -n scrna bioconductor-recount star hisat2 rsem rseqc multiqc qualimap htseq r-seurat trim-galore samtools salmon kallisto igv bioconductor-deseq2
+conda create -n scrna r-sleuth bioconductor-recount star hisat2 rsem rseqc multiqc qualimap htseq r-seurat trim-galore samtools salmon kallisto igv bioconductor-deseq2
 
 #======================================================================================#
 # log of installation 
