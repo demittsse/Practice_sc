@@ -59,3 +59,18 @@ expression = normalize.quantiles(expression)
 
 rownames(expression) = genes
 colnames(expression) = samples
+
+#> length(tissue)
+#[1] 9662
+#> length(sampid)
+#[1] 9662
+
+tissue_locations = which(tissue %in% "Breast")
+length(tissue_locations)
+#[1] 218
+ex_sample=h5read(destination_file, "data/expression", index=list(1:length(genes), tissue_locations))
+rownames(ex_sample) =  genes
+colnames(ex_sample) = sampid[tissue_locations]
+
+
+
