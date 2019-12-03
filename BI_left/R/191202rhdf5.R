@@ -37,13 +37,15 @@ if(!file.exists(destination_file)){
 
 # Retrieve information from compressed data
 h5ls(destination_file)
-samples = h5read(destination_file, "meta/geo_accession")
+samples = h5read(destination_file, "meta/sample")
 
 # Identify columns to be extracted
 #sample_locations = which(samples %in% samp)
 
 tissue = h5read(destination_file, "meta/tissue")
 genes = h5read(destination_file, "meta/genes")
+
+sampid = h5read(destination_file, "meta/sampid")
 #series = h5read(destination_file, "meta/Sample_series_id")
 
 # extract gene expression from compressed data
