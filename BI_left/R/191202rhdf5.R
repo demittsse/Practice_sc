@@ -23,6 +23,10 @@ samples <- list.files(base_dir)
 destination_file = "/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/BreastCancer/data/ReCount2OverARCHS4/GTEx_matrix.h5"
 extracted_expression_file = "GTEx_expression_matrix.tsv"
 
+
+destination_file = "/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/BreastCancer/data/ReCount2OverARCHS4/TCGA_matrix.h5"
+extracted_expression_file = "TCGA_expression_matrix.tsv"
+
 # Check if gene expression file was already downloaded, if not in current directory download file form repository
 if(!file.exists(destination_file)){
     print("Downloading compressed gene expression matrix.")
@@ -37,6 +41,29 @@ if(!file.exists(destination_file)){
 
 # Retrieve information from compressed data
 h5ls(destination_file)
+
+Tsamplid=h5read(destination_file, "/meta/sampleid")
+#> head(Tsamples)
+#[1] "3DFF72D2-F292-497E-ACE3-6FAA9C884205"
+#[2] "B1E54366-42B9-463C-8615-B34D52BD14DC"
+#[3] "473713F7-EB41-4F20-A37F-ACD209E3CB75"
+h5read(destination_file,"")
+#Tgdcsamplid=h5read(destination_file, "/meta/sampleid/meta/gdc_cases.samples.sample_id")
+Tinfo=h5read(destination_file,"/info")
+Tcancertype=h5read(destination_file,"/meta/cancertype")
+#Breast Invasive Carcinoma 1246
+Tcaseid=h5read(destination_file,"/meta/gdc_cases.case_id")
+Tprimarysite=h5read(destination_file,"/meta/gdc_cases.project.primary_site")
+#> head(Tprimarysite)
+#[1] "Liver"      "Prostate"   "Colorectal" "Liver"      "Bladder"   
+#[6] "Brain"   
+Breast 1246
+
+#> head(Tcaseid)
+#[1] "0004d251-3f70-4395-b175-c94c2f5b1b81"
+#[2] "000d566c-96c7-4f1c-b36e-fa2222467983"
+#[3] "0011a67b-1ba9-4a32-a6b8-7850759a38cf"
+
 samples = h5read(destination_file, "meta/sample")
 
 # Identify columns to be extracted
