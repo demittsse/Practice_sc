@@ -40,14 +40,15 @@ h5ls(destination_file)
 samples = h5read(destination_file, "meta/geo_accession")
 
 # Identify columns to be extracted
-sample_locations = which(samples %in% samp)
+#sample_locations = which(samples %in% samp)
 
-tissue = h5read(destination_file, "meta/sample")
+tissue = h5read(destination_file, "meta/tissue")
 genes = h5read(destination_file, "meta/genes")
-series = h5read(destination_file, "meta/Sample_series_id")
+#series = h5read(destination_file, "meta/Sample_series_id")
 
 # extract gene expression from compressed data
-expression = h5read(destination_file, "data/expression", index=list(1:length(genes), sample_locations))
+#expression = h5read(destination_file, "data/expression", index=list(1:length(genes), sample_locations))
+expression = h5read(destination_file, "data/expression")
 H5close()
 
 # normalize samples and correct for differences in gene count distribution
@@ -55,4 +56,4 @@ expression = log2(expression+1)
 expression = normalize.quantiles(expression)
 
 rownames(expression) = genes
-colnames(expression) = samples[sample_locations]
+colnames(expression) = samples
