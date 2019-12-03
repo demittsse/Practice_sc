@@ -72,5 +72,5 @@ ex_sample=h5read(destination_file, "data/expression", index=list(1:length(genes)
 rownames(ex_sample) =  genes
 colnames(ex_sample) = sampid[tissue_locations]
 
-
-
+ex_sample = log2(expression+1)
+ex_sample = normalize.quantiles(expression)
