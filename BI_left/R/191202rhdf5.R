@@ -99,5 +99,8 @@ ex_sample=h5read(destination_file, "data/expression", index=list(1:length(genes)
 rownames(ex_sample) =  genes
 colnames(ex_sample) = sampid[tissue_locations]
 
+write.csv(ex_sample,file="/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/BreastCancer/data/ReCount2OverARCHS4/191203GTExBreastTissue.csv")
+
+
 ex_sample = log2(expression+1)
 ex_sample = normalize.quantiles(expression)
