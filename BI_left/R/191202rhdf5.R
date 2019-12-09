@@ -92,6 +92,9 @@ expression = h5read(destination_file, "data/expression", index=list(1:length(gen
 rownames(expression) = genes
 colnames(expression) = analytes.submitter_id[site_locations]
 
+expression=log2(expression+1)
+write.csv(expression,file="/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/BreastCancer/data/ReCount2OverARCHS4/191203TCGABreastTissue.csv")
+
 
 # Identify columns to be extracted
 samples = h5read(destination_file, "meta/sample")
