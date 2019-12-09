@@ -23,8 +23,7 @@ Tsamplid=h5read(destination_file, "/meta/sampleid")
 h5read(destination_file,"")
 #Tgdcsamplid=h5read(destination_file, "/meta/sampleid/meta/gdc_cases.samples.sample_id")
 Tinfo=h5read(destination_file,"/info")
-Tcancertype=h5read(destination_file,"/meta/cancertype")
-#Breast Invasive Carcinoma 1246
+
 Tcaseid=h5read(destination_file,"/meta/gdc_cases.case_id")
 #> head(Tcaseid)
 #[1] "0004d251-3f70-4395-b175-c94c2f5b1b81"
@@ -66,6 +65,26 @@ analytes.submitter_id=h5read(destination_file,"/meta/gdc_cases.samples.portions.
 head(analytes.submitter_id)
 #> head(analytes.submitter_id) #[1] "TCGA-DD-AAVP-01A-11R" "TCGA-KK-A7B2-01A-12R" "TCGA-DC-6158-01A-11R"
 
+Tcancertype=h5read(destination_file,"/meta/cancertype")
+#Breast Invasive Carcinoma 1246
+
+sample_type=h5read(destination_file,"/meta/gdc_cases.samples.sample_type")
+> table(sample_type)
+sample_type
+                       Additional - New Primary 
+                                             11 
+                          Additional Metastatic 
+                                              1 
+                                     Metastatic 
+                                            394 
+Primary Blood Derived Cancer - Peripheral Blood 
+                                            126 
+                                  Primary Tumor 
+                                           9962 
+                                Recurrent Tumor 
+                                             50 
+                            Solid Tissue Normal 
+                                            740 
 
 #breast Primarysite extract
 Tprimarysite=h5read(destination_file,"/meta/gdc_cases.project.primary_site")
@@ -73,6 +92,7 @@ Tprimarysite=h5read(destination_file,"/meta/gdc_cases.project.primary_site")
 
 
 site_locations = which(Tprimarysite %in% "Breast")
+site_locations2 = which(Tprimarysite %in% "Breast" && sample_type %in% "Normal")
 length(site_locations)
 
 expression = h5read(destination_file, "data/expression", index=list(1:length(genes), site_locations))
@@ -85,6 +105,18 @@ expression=log2(expression+1)
 
 ### write csv
 write.csv(expression,file="/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/BreastCancer/data/ReCount2OverARCHS4/191203TCGABreastTissue.csv")
+
+
+meta1<-data.frame(matrix(nrow=length(analytes.submitter_id), ncol=3))
+colnames(meta1)=c("Barcode","Cancertype","Sampletype")
+rownames(meta1)
+
+meta1["Barcode"]=analytes.submitter_id
+meta1["Cancertype"]=Tcancertype
+meta1["Sampletype"]=sample_type
+
+write.csv(meta1,file="/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/BreastCancer/data/ReCount2OverARCHS4/191209TCGACllinical.csv")
+
 
 #--------------------------------------------------------------------------------------------------#
 ## To get "Tprimarysite != Breast" Expression Table
