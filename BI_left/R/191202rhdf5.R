@@ -84,6 +84,17 @@ Breast 1246
 site_locations = which(Tprimarysite %in% "Breast")
 length(site_locations)
 
+`%notin%` <- Negate(`%in%`)
+ExBreast_locations = which(Tprimarysite %notin% "Breast")
+all_locations = which(Tprimarysite)
+
+> length(ExBreast_locations)
+[1] 10038
+
+> length(Tprimarysite)
+[1] 11284
+
+
 expression = h5read(destination_file, "data/expression", index=list(1:length(genes), site_locations))
 #> head(Tcaseid)
 #[1] "0004d251-3f70-4395-b175-c94c2f5b1b81"
