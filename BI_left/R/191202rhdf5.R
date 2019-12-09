@@ -96,6 +96,7 @@ ExBreast_locations = which(Tprimarysite %notin% "Breast")
 length(ExBreast_locations) # Except Breast sample number [1] 10038
 length(Tprimarysite) # Total sample number [1] 11284
 
+
 analytes.submitter_id[ExBreast_locations]
 table(Tprimarysite[ExBreast_locations])
 > table(Tprimarysite[ExBreast_locations])
@@ -110,6 +111,17 @@ Adrenal Gland     Bile Duct       Bladder   Bone Marrow         Brain
           183            87           558           473           265 
       Stomach        Testis        Thymus       Thyroid        Uterus 
           453           156           122           572           646 
+
+ExBexpression = h5read(destination_file, "data/expression", index=list(1:length(genes), ExBreast_locations))
+
+rownames(ExBexpression) = genes
+colnames(ExBexpression) = analytes.submitter_id[ExBreast_locations]
+
+### log2 normalization
+ExBexpression=log2(ExBexpression+1)
+
+### write csv
+write.csv(ExBexpression,file="/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/BreastCancer/data/ReCount2OverARCHS4/191209TCGAExceptBreastTissue_log2.csv")
 
 ##================================================================================================================##
 # Identify columns to be extracted
