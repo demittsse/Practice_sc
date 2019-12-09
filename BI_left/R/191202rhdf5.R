@@ -42,6 +42,7 @@ if(!file.exists(destination_file)){
 # Retrieve information from compressed data
 h5ls(destination_file)
 
+genes = h5read(destination_file, "meta/genes")
 Tsamplid=h5read(destination_file, "/meta/sampleid")
 #> head(Tsamples)
 #[1] "3DFF72D2-F292-497E-ACE3-6FAA9C884205"
@@ -53,20 +54,49 @@ Tinfo=h5read(destination_file,"/info")
 Tcancertype=h5read(destination_file,"/meta/cancertype")
 #Breast Invasive Carcinoma 1246
 Tcaseid=h5read(destination_file,"/meta/gdc_cases.case_id")
+> head(Tcaseid)
+[1] "0004d251-3f70-4395-b175-c94c2f5b1b81"
+[2] "000d566c-96c7-4f1c-b36e-fa2222467983"
+
+#TCGA Barcode
+submitter_id=h5read(destination_file,"/meta/gdc_cases.samples.submitter_id")
+/meta/gdc_cases.samples.submitter_id
+[1] "TCGA-DD-AAVP-01A" "TCGA-KK-A7B2-01A" "TCGA-DC-6158-01A" "TCGA-DD-A4NP-01A"
+[5] "TCGA-HQ-A5ND-01A" "TCGA-HT-A614-01A"
+sample_id=h5read(destination_file,"/meta/gdc_cases.samples.sample_id")
+> head(sample_id)
+[1] "9259e9ee-7279-4b62-8512-509cb705029c"
+[2] "bccb7f9d-8dde-45b7-a50d-6c7233239ceb"
+
+analytes.submitter_id=h5read(destination_file,"/meta/gdc_cases.samples.portions.analytes.submitter_id")
+head(analytes.submitter_id)
+
+> head(analytes.submitter_id)
+[1] "TCGA-DD-AAVP-01A-11R" "TCGA-KK-A7B2-01A-12R" "TCGA-DC-6158-01A-11R"
+[4] "TCGA-DD-A4NP-01A-11R" "TCGA-HQ-A5ND-01A-11R" "TCGA-HT-A614-01A-11R"
+
+#breast Tissue extract
 Tprimarysite=h5read(destination_file,"/meta/gdc_cases.project.primary_site")
 #> head(Tprimarysite)
 #[1] "Liver"      "Prostate"   "Colorectal" "Liver"      "Bladder"   
 #[6] "Brain"   
 Breast 1246
+site_locations = which(Tprimarysite %in% "Breast")
+length(site_locations)
 
+expression = h5read(destination_file, "data/expression", index=list(1:length(genes), site_locations))
 #> head(Tcaseid)
 #[1] "0004d251-3f70-4395-b175-c94c2f5b1b81"
 #[2] "000d566c-96c7-4f1c-b36e-fa2222467983"
 #[3] "0011a67b-1ba9-4a32-a6b8-7850759a38cf"
+rownames(expression) = genes
+colnames(expression) = analytes.submitter_id[site_locations]
 
-samples = h5read(destination_file, "meta/sample")
 
 # Identify columns to be extracted
+samples = h5read(destination_file, "meta/sample")
+
+
 #sample_locations = which(samples %in% samp)
 
 tissue = h5read(destination_file, "meta/tissue")
