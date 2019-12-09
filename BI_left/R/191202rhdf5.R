@@ -3,16 +3,6 @@ Parsing H5 file
 Scripts to extract tab separated gene expression files can be created through the graphical user interface of ARCHS4. The script has to be executed as an R-script. A free version of R can be downloaded from: www.rstudio.com. Upon execution the script should install all required dependencies, and then download the full gene expression file before extracting the selected samples.
 
 
-# R script to download selected samples
-# Copy code and run on a local machine to initiate download
-# Check for dependencies and install if missing
-packages <- c("rhdf5", "preprocessCore")
-if (length(setdiff(packages, rownames(installed.packages()))) > 0) {
-    print("Install required packages")
-    source("https://bioconductor.org/biocLite.R")
-    biocLite("rhdf5")
-    biocLite("preprocessCore")
-}
 library("rhdf5")
 library("preprocessCore")
 
@@ -27,17 +17,6 @@ extracted_expression_file = "GTEx_expression_matrix.tsv"
 destination_file = "/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/BreastCancer/data/ReCount2OverARCHS4/TCGA_matrix.h5"
 extracted_expression_file = "TCGA_expression_matrix.tsv"
 
-# Check if gene expression file was already downloaded, if not in current directory download file form repository
-if(!file.exists(destination_file)){
-    print("Downloading compressed gene expression matrix.")
-    url = "https://s3.amazonaws.com/mssm-seq-matrix/human_matrix.h5"
-    download.file(url, destination_file, quiet = FALSE)
-} else{
-    print("Local file already exists.")
-}
-
-# Selected samples to be extracted
-##samp = c("GSM1224927","GSM1066120","GSM1224923","GSM1224929","GSM1224924","GSM1066118","GSM1066119","GSM1224925","GSM1224930","GSM1872071","GSM2282084","GSM1872064","GSM1872067","GSM1704845")
 
 # Retrieve information from compressed data
 h5ls(destination_file)
@@ -84,17 +63,6 @@ Breast 1246
 site_locations = which(Tprimarysite %in% "Breast")
 length(site_locations)
 
-`%notin%` <- Negate(`%in%`)
-ExBreast_locations = which(Tprimarysite %notin% "Breast")
-all_locations = which(Tprimarysite)
-
-> length(ExBreast_locations)
-[1] 10038
-
-> length(Tprimarysite)
-[1] 11284
-
-
 expression = h5read(destination_file, "data/expression", index=list(1:length(genes), site_locations))
 #> head(Tcaseid)
 #[1] "0004d251-3f70-4395-b175-c94c2f5b1b81"
@@ -105,6 +73,32 @@ colnames(expression) = analytes.submitter_id[site_locations]
 
 expression=log2(expression+1)
 write.csv(expression,file="/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/BreastCancer/data/ReCount2OverARCHS4/191203TCGABreastTissue.csv")
+
+## To get "Tprimarysite != Breast" Expression Table
+`%notin%` <- Negate(`%in%`)
+ExBreast_locations = which(Tprimarysite %notin% "Breast")
+all_locations = which(Tprimarysite)
+
+> length(ExBreast_locations)
+[1] 10038
+
+> length(Tprimarysite)
+[1] 11284
+
+analytes.submitter_id[ExBreast_locations]
+table(Tprimarysite[ExBreast_locations])
+> table(Tprimarysite[ExBreast_locations])
+
+Adrenal Gland     Bile Duct       Bladder   Bone Marrow         Brain 
+          266            45           433           126           707 
+       Cervix    Colorectal     Esophagus           Eye Head and Neck 
+          309           723           198            80           548 
+       Kidney         Liver          Lung   Lymph Nodes         Ovary 
+         1030           424          1156            48           430 
+     Pancreas        Pleura      Prostate          Skin   Soft Tissue 
+          183            87           558           473           265 
+      Stomach        Testis        Thymus       Thyroid        Uterus 
+          453           156           122           572           646 
 
 
 # Identify columns to be extracted
@@ -148,3 +142,29 @@ write.csv(ex_sample,file="/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612
 
 ex_sample = log2(expression+1)
 ex_sample = normalize.quantiles(expression)
+
+
+##================================================================================================================##
+## install R module related
+
+# R script to download selected samples
+# Copy code and run on a local machine to initiate download
+# Check for dependencies and install if missing
+packages <- c("rhdf5", "preprocessCore")
+if (length(setdiff(packages, rownames(installed.packages()))) > 0) {
+    print("Install required packages")
+    source("https://bioconductor.org/biocLite.R")
+    biocLite("rhdf5")
+    biocLite("preprocessCore")
+}
+# Check if gene expression file was already downloaded, if not in current directory download file form repository
+if(!file.exists(destination_file)){
+    print("Downloading compressed gene expression matrix.")
+    url = "https://s3.amazonaws.com/mssm-seq-matrix/human_matrix.h5"
+    download.file(url, destination_file, quiet = FALSE)
+} else{
+    print("Local file already exists.")
+}
+
+# Selected samples to be extracted
+##samp = c("GSM1224927","GSM1066120","GSM1224923","GSM1224929","GSM1224924","GSM1066118","GSM1066119","GSM1224925","GSM1224930","GSM1872071","GSM2282084","GSM1872064","GSM1872067","GSM1704845")
