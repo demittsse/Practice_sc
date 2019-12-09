@@ -1,3 +1,54 @@
+import os, glob, time
+start=time.strftime("%y%m%d")
+
+maindir="/media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/"
+newTrimDir="%s02trim/%s"%(maindir,project_name)
+newStarDir="%s03star/%s"%(maindir,project_name)
+newQualiDir="%s03qualimap/%s"%(maindir,project_name)
+newRsemDir="%s04rsem/%s"%(maindir,project_name)
+newLogDir="%s04rsem/log_%s"%(maindir,project_name)
+
+if os.path.isdir(newTrimDir) == 0:
+	os.system("mkdir %s"%(newTrimDir))
+
+if os.path.isdir(newStarDir) == 0:
+	os.system("mkdir %s"%(newStarDir))
+
+if os.path.isdir(newQualiDir) == 0:
+	os.system("mkdir %s"%(newQualiDir))
+
+if os.path.isdir(newRsemDir) == 0:
+	os.system("mkdir %s"%(newRsemDir))
+
+if os.path.isdir(newLogDir) == 0:
+	os.system("mkdir %s"%(newLogDir))
+
+
+#================================================================================================================
+##Create ouput file
+#================================================================================================================
+oufname="/home/cytogenbi2/00script/BI_left/run/%s.sh"%(project_name)
+ouf=open(oufname,"w")
+
+
+
+genomeDir=maindir+"/00ref/STAR38" 
+sjdbGTFfile=maindir+"00ref/ensembl/GRCh38/Homo_sapiens.GRCh38.97.gtf"
+rsemrefDir=maindir+"00ref/STAR38/RSEM"
+
+infFa=glob.glob("/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/01raw/SMC009_30ea/*_1.fastq.gz")
+
+lineNum=0
+for infile in infFa:
+	lineNum+=1
+	#if lineNum == 1: continue
+	print("#",lineNum)	
+	if "fastq.gz" in infile:
+		fastq2= infile.split("_1.fastq.gz")[0]+"_2.fastq.gz"
+	else :
+		fastq2= infile.split("_1.fastq")[0]+"_2.fastq"
+	cm_trim = "trim_galore %s %s --paired --phred33  -o %s\n\n\n"%(infile,fastq2,newTrimDir)
+
 #=============================================
 ## trimming & Star mapping Gencode Ref
 #=============================================
