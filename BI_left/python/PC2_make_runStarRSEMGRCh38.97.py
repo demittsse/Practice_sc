@@ -56,7 +56,7 @@ print("sum of trim1...trimN = ", len(trim1)+len(trim2)+len(trim3)+len(trim4)+len
 ### Create output folder & executable bash file ###
 
 #os.system("chmod 777 /home/cytogen-bi2/00script/BI_left/run/%sTrimStar%s.sh"%(start,project_name))
-maindir="/dt2/"
+maindir="/media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/"
 newTrimDir="%s02trim/%s"%(maindir,project_name)
 newStarDir="%s03star/%s"%(maindir,project_name)
 newQualiDir="%s03qualimap/%s"%(maindir,project_name)
@@ -106,7 +106,7 @@ trimFa=glob.glob("%s/02trim/07SMC009_191209/*_1_val_1.fq.gz"%maindir)
 #================================================================================================================
 ##Create ouput file
 #================================================================================================================
-oufname="/home/cytogenbi2/00script/BI_left/run/%sstar.sh"%(project_name)
+oufname="/home/cytogenbi2/00script/run/%sstar.sh"%(project_name)
 ouf=open(oufname,"w")
 # conda activate scrna
 
