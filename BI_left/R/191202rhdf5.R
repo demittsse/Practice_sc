@@ -135,6 +135,26 @@ meta1["BarcodeMod"]=str_replace_all(meta1$Barcode,"-",".")
 5 TCGA.HQ.A5ND.01A.11R
 6 TCGA.HT.A614.01A.11R
 
+
+> colnames(meta1)
+[1] "X"          "Barcode"    "Cancertype" "Sampletype" "BarcodeMod"
+
+> table(meta_breast$Sampletype)
+
+                       Additional - New Primary                                               0 
+                          Additional Metastatic                                               0 
+                                     Metastatic                                               7 
+Primary Blood Derived Cancer - Peripheral Blood                                               0 
+                                  Primary Tumor                                            1127 
+                                Recurrent Tumor                                               0 
+                            Solid Tissue Normal                                             112 
+
+
+meta_breast=subset(meta1, Cancertype == "Breast Invasive Carcinoma")
+meta_breast_primary=subset(meta_breast, Sampletype=="Primary Tumor")
+meta_breast_normal=subset(meta_breast, Sampletype=="Solid Tissue Normal")
+meta_breast_metastatic=subset(meta_breast, Sampletype=="Metastatic")
+
 #--------------------------------------------------------------------------------------------------#
 ## To get "Tprimarysite != Breast" Expression Table
 #--------------------------------------------------------------------------------------------------#
