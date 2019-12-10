@@ -1,16 +1,9 @@
-Parsing H5 file
+### Parsing H5 file
 
-Scripts to extract tab separated gene expression files can be created through the graphical user interface of ARCHS4. The script has to be executed as an R-script. A free version of R can be downloaded from: www.rstudio.com. Upon execution the script should install all required dependencies, and then download the full gene expression file before extracting the selected samples.
-
-
+# Scripts to extract tab separated gene expression files can be created through the graphical user interface of ARCHS4. The script has to be executed as an R-script. A free version of R can be downloaded from: www.rstudio.com. Upon execution the script should install all required dependencies, and then download the full gene expression file before extracting the selected samples.
 
 
 destination_file = "/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/BreastCancer/data/ReCount2OverARCHS4/GTEx_matrix.h5"
-extracted_expression_file = "GTEx_expression_matrix.tsv"
-
-
-extracted_expression_file = "TCGA_expression_matrix.tsv"
-
 
 # Retrieve information from compressed data
 h5ls(destination_file)
@@ -92,7 +85,6 @@ Tprimarysite=h5read(destination_file,"/meta/gdc_cases.project.primary_site")
 
 
 site_locations = which(Tprimarysite %in% "Breast")
-site_locations2 = which(Tprimarysite %in% "Breast" && sample_type %in% "Normal")
 length(site_locations)
 
 expression = h5read(destination_file, "data/expression", index=list(1:length(genes), site_locations))
@@ -106,7 +98,7 @@ expression=log2(expression+1)
 ### write csv
 write.csv(expression,file="/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/BreastCancer/data/ReCount2OverARCHS4/191203TCGABreastTissue.csv")
 
-
+### make meta file "Barcode","Cancertype","Sampletype"
 meta1<-data.frame(matrix(nrow=length(analytes.submitter_id), ncol=3))
 colnames(meta1)=c("Barcode","Cancertype","Sampletype")
 rownames(meta1)
@@ -117,6 +109,31 @@ meta1["Sampletype"]=sample_type
 
 write.csv(meta1,file="/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/BreastCancer/data/ReCount2OverARCHS4/191209TCGACllinical.csv")
 
+### join metafile
+library("dplyr")
+
+TCGAbreast=read.csv("/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/BreastCancer/data/ReCount2OverARCHS4/191203TCGABreastTissue.csv", row.names=1, sep = ",", header = T)
+meta1=read.csv("/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/BreastCancer/data/ReCount2OverARCHS4/191209TCGACllinical.csv", row.names=FALSE, header = T)
+
+TCGAbreast_bar=colnames(TCGAbreast)
+meta1["BarcodeMod"]=str_replace_all(meta1$Barcode,"-",".")
+
+
+> head(meta1)
+  X              Barcode                     Cancertype    Sampletype
+1 1 TCGA-DD-AAVP-01A-11R Liver Hepatocellular Carcinoma Primary Tumor
+2 2 TCGA-KK-A7B2-01A-12R        Prostate Adenocarcinoma Primary Tumor
+3 3 TCGA-DC-6158-01A-11R          Rectum Adenocarcinoma Primary Tumor
+4 4 TCGA-DD-A4NP-01A-11R Liver Hepatocellular Carcinoma Primary Tumor
+5 5 TCGA-HQ-A5ND-01A-11R   Bladder Urothelial Carcinoma Primary Tumor
+6 6 TCGA-HT-A614-01A-11R       Brain Lower Grade Glioma Primary Tumor
+            BarcodeMod
+1 TCGA.DD.AAVP.01A.11R
+2 TCGA.KK.A7B2.01A.12R
+3 TCGA.DC.6158.01A.11R
+4 TCGA.DD.A4NP.01A.11R
+5 TCGA.HQ.A5ND.01A.11R
+6 TCGA.HT.A614.01A.11R
 
 #--------------------------------------------------------------------------------------------------#
 ## To get "Tprimarysite != Breast" Expression Table
