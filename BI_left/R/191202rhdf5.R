@@ -109,7 +109,10 @@ meta1["Sampletype"]=sample_type
 
 write.csv(meta1,file="/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/BreastCancer/data/ReCount2OverARCHS4/191209TCGACllinical.csv")
 
-### join metafile
+#--------------------------------------------------------------------------------------------------#
+### sample type extraction , join metafile
+#--------------------------------------------------------------------------------------------------#
+
 library("dplyr")
 
 TCGAbreast=read.csv("/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/BreastCancer/data/ReCount2OverARCHS4/191203TCGABreastTissue.csv", row.names=1, sep = ",", header = T)
@@ -155,6 +158,38 @@ meta_breast_primary=subset(meta_breast, Sampletype=="Primary Tumor")
 meta_breast_normal=subset(meta_breast, Sampletype=="Solid Tissue Normal")
 meta_breast_metastatic=subset(meta_breast, Sampletype=="Metastatic")
 
+# other cancer type
+> table(meta_ExBRCA$Sampletype)
+
+                       Additional - New Primary 
+                                             11 
+                          Additional Metastatic 
+                                              1 
+                                     Metastatic 
+                                            387 
+Primary Blood Derived Cancer - Peripheral Blood 
+                                            126 
+                                  Primary Tumor 
+                                           8835 
+                                Recurrent Tumor 
+                                             50 
+                            Solid Tissue Normal 
+                                            628 
+
+
+ExBRCA=read.csv("/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/BreastCancer/data/ReCount2OverARCHS4/191209TCGAExceptBreastTissue_log2.csv", row.names=1, sep = ",", header = T)
+
+meta_ExBRCA=subset(meta1, Cancertype != "Breast Invasive Carcinoma")
+meta_ExBRCA_primary=subset(meta_ExBRCA, Sampletype=="Primary Tumor")
+meta_ExBRCA_normal=subset(meta_ExBRCA, Sampletype=="Solid Tissue Normal")
+meta_ExBRCA_metastatic=subset(meta_ExBRCA, Sampletype=="Metastatic")
+meta_ExBRCA_recurrent=subset(meta_ExBRCA, Sampletype=="Recurrent Tumor")
+meta_ExBRCA_peripheral=subset(meta_ExBRCA, Sampletype=="Primary Blood Derived Cancer - Peripheral Blood")
+
+##include Additional - New Primary(11)>> primary , Additional Metastatic(1) >>metastatic
+meta_breast_primary2=meta_ExBRCA[grep("Primary", meta_ExBRCA$Sampletype),]
+meta_ExBRCA_metastatic2=meta_ExBRCA[grep("Metastatic", meta_ExBRCA$Sampletype),]
+
 #--------------------------------------------------------------------------------------------------#
 ## To get "Tprimarysite != Breast" Expression Table
 #--------------------------------------------------------------------------------------------------#
@@ -191,6 +226,8 @@ ExBexpression=log2(ExBexpression+1)
 
 ### write csv
 write.csv(ExBexpression,file="/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/BreastCancer/data/ReCount2OverARCHS4/191209TCGAExceptBreastTissue_log2.csv")
+
+
 
 ##================================================================================================================##
 # Identify columns to be extracted
