@@ -51,11 +51,15 @@ for infile in infFa:
 #================================================================================================================
 ### Mapping with Star, RSEM Quantification ###
 #================================================================================================================
+import os, glob, time
+start=time.strftime("%y%m%d")
+project_name="07SMC009_%s"%(start)
 
-trimFa=glob.glob("%s/02trim/07SMC009_191209/*_1_val_1.fq.gz"%maindir)
-print("trimFa length = ", len(trimFa))
 
 maindir="/media/cytogenbi1/D2C67EE7C67ECAED/"
+trimFa=glob.glob("%s/02trim/07SMC009_191210/*_1_val_1.fq.gz"%maindir)
+print("trimFa length = ", len(trimFa))
+
 newTrimDir="%s02trim/%s"%(maindir,project_name)
 newStarDir="%s03star/%s"%(maindir,project_name)
 newQualiDir="%s03qualimap/%s"%(maindir,project_name)
@@ -67,9 +71,7 @@ sjdbGTFfile="%s00ref/ensembl38.97/Homo_sapiens.GRCh38.97.gtf"%(maindir)
 rsemrefDir="%s00ref/RSEM_STAR38"%(maindir)
 
 ##Create ouput file
-import os, glob, time
-start=time.strftime("%y%m%d")
-project_name="07SMC009_%s"%(start)
+
 oufname="%s00script/run/starrsem%s.sh"%(maindir,project_name)
 ouf=open(oufname,"w")
 
