@@ -5,7 +5,7 @@ inputTPM="/dt2/04rsem/06ENS3803_Merge191120/191120rsemTPMENSG.csv"
 def ENSG2GeneName(inputTPM):
 	import os
 	file1="/media/cytogenbi1/D2C67EE7C67ECAED/BI/02ref/ensembl38.97/GeneE38_97EXversion.txt"
-	file2="/dt1/00ref/modGTF38/GeneE38_97EXversion.txt"
+	file2="/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/00ref/modGTF38/GeneE38_97EXversion.txt"
 	if os.path.isfile(file1):
 		inf1=open(file1)
 		glines=inf1.readlines()
@@ -44,7 +44,7 @@ inputTPM="/media/cytogenbi1/D2C67EE7C67ECAED/BI/07kallisto/results/191114CMC11_1
 def ENSG2GeneName(inputTPM):
 	import os
 	file1="/media/cytogenbi1/D2C67EE7C67ECAED/BI/02ref/ensembl38.97/GeneE38_97Wthversion.txt"
-	file2="/dt1/00ref/modGTF38/GeneE38_97Wthversion.txt"
+	file2="/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/00ref/modGTF38/GeneE38_97Wthversion.txt"
 	if os.path.isfile(file1):
 		inf1=open(file1)
 		glines=inf1.readlines()
