@@ -1,3 +1,51 @@
+#==> 191211ExpressionSeurat_scater.R <==#
+library(Seurat)
+
+SMC-009_2​
+SMC-009_4​
+SMC-009_44​
+SMC-009_61​
+SMC-009_65​
+
+resd1=read.csv("/media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/04rsem/07SMC009_191209/191211rsemTPMENSG_geneAnno.csv",header=T,row.names=1)
+
+resd2=resd1[c("SMC_009.2", "SMC_009.4", "SMC_009.44", "SMC_009.61", "SMC_009.65")]
+
+library(stringr)
+#colnames(resd)<-str_replace_all(colnames(resd), "PBMC3.", "PBMC.3_")
+
+cmc.data <-CreateSeuratObject(resd1, min.cells = 3, min.features = 200, project = "CMC")
+
+cmc.data[["percent.mt"]] <- PercentageFeatureSet(cmc.data, pattern = "^MT-")
+
+
+
+# Visualize QC metrics as a violin plot
+png(filename="geneRNA_MT_violin_SMC009All.png",width = 800, height=600)
+
+VlnPlot(cmc.data, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+dev.off()
+
+##### Filtered  ###########
+resd2=resd1[c("SMC_009.2", "SMC_009.4", "SMC_009.44", "SMC_009.61", "SMC_009.65")]
+
+library(stringr)
+#colnames(resd)<-str_replace_all(colnames(resd), "PBMC3.", "PBMC.3_")
+
+cmc.data2 <-CreateSeuratObject(resd2, min.cells = 2, min.features = 200, project = "CMC")
+
+cmc.data2[["percent.mt"]] <- PercentageFeatureSet(cmc.data2, pattern = "^MT-")
+
+
+
+# Visualize QC metrics as a violin plot
+png(filename="geneRNA_MT_violin_SMC009Filtered2.png",width = 800, height=600)
+
+VlnPlot(cmc.data2, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+dev.off()
+
+#==> 191128ExpressionSeurat_scater.R <==#
+
 """
 CMC-011_08​
 CMC-011_19​
