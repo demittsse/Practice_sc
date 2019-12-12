@@ -1,7 +1,7 @@
 
 import os, glob, time
 start=time.strftime("%y%m%d")
-project_name="07SMC009_%s"%(start)
+project_name="07SMC008_%s"%(start)
 
 maindir="/media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/"
 
@@ -41,12 +41,15 @@ if os.path.isdir(newLogDir) == 0:
 ##Create ouput file
 import os, glob, time
 start=time.strftime("%y%m%d")
-project_name="07SMC009_%s"%(start)
+project_name="07SMC008_%s"%(start)
+
+
+infFa=glob.glob("/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/01raw/SMC008_12ea/*_1.fastq.gz")
+len(infFa)
 
 oufname="%s00script/run/trim%s.sh"%(maindir,project_name)
 ouf=open(oufname,"w")
 
-infFa=glob.glob("/media/cytogenbi1/D2C67EE7C67ECAED/BI/02raw/SMC008_12ea/*_1.fastq.gz")
 
 lineNum=0
 for infile in infFa:
@@ -58,15 +61,19 @@ for infile in infFa:
 	else :
 		fastq2= infile.split("_1.fastq")[0]+"_2.fastq"
 	cm_trim = "trim_galore %s %s --paired --phred33  -o %s\n\n\n"%(infile,fastq2,newTrimDir)
-    print(cm_trim)
-    ouf.write("#%s\n"%lineNum)
-    ouf.write(cm_trim)
+	print(cm_trim)
+	ouf.write("#%s\n"%lineNum)
+	ouf.write(cm_trim)
 
+ouf.close()
+os.system("chmod 755 %s"%(oufname))
+
+print("tail %s"%(oufname))
 
 ## before trim qc
 import os, glob, time
 start=time.strftime("%y%m%d")
-project_name="07SMC009_%s"%(start)
+project_name="07SMC008_%s"%(start)
 #project_name="07SMC009_191209"
 maindir="/media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/"
 
@@ -205,7 +212,7 @@ compRaw(1,trimFa, "_1_val_1.fq.gz", "/dt2/04rsem/06ENS3803_191111/", "scQuant.ge
 trimFa=trim1+trim2+trim3+trim4+trim5
 
 maindir="/media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/"
-trimFa=glob.glob("%s/02trim/07SMC009_191209/*_1_val_1.fq.gz"%maindir)
+trimFa=glob.glob("%s02trim/07SMC008_191212/*_1_val_1.fq.gz"%maindir)
 print("trimFa length = ", len(trimFa))
 print("sum of trim1...trimN = ", len(trim1)+len(trim2)+len(trim3)+len(trim4)+len(trim5))
 ### Create output folder & executable bash file ###
@@ -254,12 +261,12 @@ genomeDir="/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/00ref/STAR38"
 sjdbGTFfile="/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/00ref/ensembl/GRCh38/Homo_sapiens.GRCh38.97.gtf"
 rsemrefDir="/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/00ref/STAR38/RSEM"
 
-trimFa=glob.glob("%s/02trim/07SMC009_191209/*_1_val_1.fq.gz"%maindir)
+trimFa=glob.glob("%s02trim/%s/*_1_val_1.fq.gz"%(maindir,project_name))
 
 #================================================================================================================
 ##Create ouput file
 #================================================================================================================
-oufname="/home/cytogenbi2/00script/run/%sstar.sh"%(project_name)
+oufname="%s00script/run/%sstar.sh"%(maindir,project_name)
 ouf=open(oufname,"w")
 # conda activate scrna
 
