@@ -270,6 +270,7 @@ oufname="%s00script/run/%sstar.sh"%(maindir,project_name)
 ouf=open(oufname,"w")
 # conda activate scrna
 
+fline=[]
 lineNum=0
 for infile in trimFa:
 	lineNum+=1
@@ -286,16 +287,26 @@ for infile in trimFa:
 	print(cm_trimmed_star)
 	print(cm_qualimap)
 	print(cm_rsem)
+	if lineNum ==1 : fline.append(cm_trimmed_star)
 	ouf.write(cm_trimmed_star)
 	ouf.write("echo %s %s star alignment done!\n"%(project_name, sample))
 	ouf.write(cm_qualimap)
 	ouf.write("echo %s %s Qualimap done!\n"%(project_name, sample))
 	ouf.write(cm_rsem)
 	ouf.write("echo %s %s rsem done!\n"%(project_name, sample))
+	
 
 ouf.close()
-
 os.system("chmod 755 %s"%(oufname))
+f1=os.popen("head -1 %s"%(oufname))
+print(f1.read())
+
+print(fline[0])
+cmawk='''awk 'NR==1{$0="#%s"}1' %s>%s'''%(str(fline[0].strip()), oufname, oufname.replace(".sh","2.sh"))
+os.system(cmawk)
+f2=os.popen("head -1 %s"%(oufname.replace(".sh","2.sh")))
+print(f2.read())
+
 
 print("tail %s"%(oufname))
 print("%s>%s/%.log"%(oufname,newLogDir, project_name))
