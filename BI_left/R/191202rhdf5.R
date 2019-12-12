@@ -114,11 +114,18 @@ write.csv(meta1,file="/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/Bre
 #--------------------------------------------------------------------------------------------------#
 
 library("dplyr")
+library("stringr")
 
-TCGAbreast=read.csv("/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/BreastCancer/data/ReCount2OverARCHS4/191203TCGABreastTissue.csv", row.names=1, sep = ",", header = T)
-meta1=read.csv("/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/BreastCancer/data/ReCount2OverARCHS4/191209TCGACllinical.csv", row.names=FALSE, header = T)
+# PC2
+setwd("/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/BreastCancer/data/ReCount2OverARCHS4/")
+# PC1 
+setwd("/media/cytogenbi1/e6ec2b5e-fd48-426e-82ab-0e7578d5b110/home/desktop-bi-16/TCGA")
 
-TCGAbreast_bar=colnames(TCGAbreast)
+
+TCGAbreast=read.csv("191203TCGABreastTissue.csv", row.names=1, sep = ",", header = T)
+meta1=read.csv("191209TCGACllinical.csv", row.names=1, header = T)
+
+#TCGAbreast_bar=colnames(TCGAbreast)
 meta1["BarcodeMod"]=str_replace_all(meta1$Barcode,"-",".")
 
 
@@ -177,7 +184,7 @@ Primary Blood Derived Cancer - Peripheral Blood
                                             628 
 
 
-ExBRCA=read.csv("/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/BreastCancer/data/ReCount2OverARCHS4/191209TCGAExceptBreastTissue_log2.csv", row.names=1, sep = ",", header = T)
+ExBRCA=read.csv("191209TCGAExceptBreastTissue_log2.csv", row.names=1, sep = ",", header = T)
 
 meta_ExBRCA=subset(meta1, Cancertype != "Breast Invasive Carcinoma")
 meta_ExBRCA_primary=subset(meta_ExBRCA, Sampletype=="Primary Tumor")
