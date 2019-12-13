@@ -2,11 +2,11 @@
 
 # Scripts to extract tab separated gene expression files can be created through the graphical user interface of ARCHS4. The script has to be executed as an R-script. A free version of R can be downloaded from: www.rstudio.com. Upon execution the script should install all required dependencies, and then download the full gene expression file before extracting the selected samples.
 
-
+destination_tcga="tcga_matrix.h5"
 destination_file = "/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/BreastCancer/data/ReCount2OverARCHS4/GTEx_matrix.h5"
 
 # Retrieve information from compressed data
-h5ls(destination_file)
+h5ls(destination_tcga)
 
 Tsamplid=h5read(destination_file, "/meta/sampleid")
 #> head(Tsamples)
@@ -46,7 +46,7 @@ base_dir <- "/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/BreastCancer
 setwd(base_dir)
 samples <- list.files(base_dir)
 
-destination_file = "/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/BreastCancer/data/ReCount2OverARCHS4/TCGA_matrix.h5"
+destination_file = "TCGA_matrix.h5"
 
 
 ### Extract Columns
