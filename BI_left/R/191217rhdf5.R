@@ -1,3 +1,55 @@
+library("dplyr")
+
+library(rhdf5)
+library(preprocessCore)
+
+
+ptcga="/media/cytogenbi1/e6ec2b5e-fd48-426e-82ab-0e7578d5b110/home/desktop-bi-16/TCGA"
+setwd(ptcga)
+
+TCGAh5<-H5Fopen("tcga_matrix.h5")
+Tgene=h5read(TCGAh5, "meta/genes")
+analytes.submitter_id=h5read(TCGAh5, "/meta/gdc_cases.samples.portions.analytes.submitter_id")
+
+Tcancertype=h5read(TCGAh5,"/meta/cancertype")
+Tsample_type=h5read(TCGAh5,"/meta/gdc_cases.samples.sample_type")
+
+Tsample_id=h5read(TCGAh5,"/meta/sampleid")
+Texpression = h5read(TCGAh5, "data/expression")
+
+rownames(Texpression) = Tgene
+colnames(Texpression) = Tsample_id
+
+write.csv(Texpression,file="191217TCGAAllcancer.csv")
+
+### make meta file "Sampleid","Barcode","Cancertype","Sampletype"
+meta1<-data.frame(matrix(nrow=length(analytes.submitter_id), ncol=4))
+colnames(meta1)=c("Sampleid","Barcode","Cancertype","Sampletype")
+rownames(meta1)
+
+meta1["Barcode"]=analytes.submitter_id
+meta1["Cancertype"]=Tcancertype
+meta1["Sampletype"]=Tsample_type
+meta1["Sampleid"]=Tsample_id
+
+write.csv(meta1,file="191217modTCGACllinical.csv")
+
+
+
+# gdc file id
+> head(Tsample_id)
+[1] "3DFF72D2-F292-497E-ACE3-6FAA9C884205"
+[2] "B1E54366-42B9-463C-8615-B34D52BD14DC"
+[3] "473713F7-EB41-4F20-A37F-ACD209E3CB75"
+[4] "11F18F54-9B33-4C33-BDF9-0F093F4F3336"
+[5] "136B7576-1108-4FA3-8254-6069F0CA879A"
+[6] "E81FA8B7-3FFE-4F73-94AF-0B5257D7F81A"
+
+# ==> PAADclinical.tsv <==
+#"37daa7f7-df62-5f38-8035-c17d2a8a931b"
+
+
+#=========>   191202rhdf5.R
 ### Parsing H5 file
 
 # Scripts to extract tab separated gene expression files can be created through the graphical user interface of ARCHS4. The script has to be executed as an R-script. A free version of R can be downloaded from: www.rstudio.com. Upon execution the script should install all required dependencies, and then download the full gene expression file before extracting the selected samples.
@@ -40,6 +92,10 @@ sample_id=h5read(destination_file,"/meta/gdc_cases.samples.sample_id")
 # To extract TCGA Breast expression  1246
 #--------------------------------------------------------------------------------------------------#
 library("rhdf5")
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("preprocessCore")
 library("preprocessCore")
 
 base_dir <- "/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/BreastCancer/data/ReCount2OverARCHS4"
@@ -87,6 +143,7 @@ Tprimarysite=h5read(destination_file,"/meta/gdc_cases.project.primary_site")
 site_locations = which(Tprimarysite %in% "Breast")
 length(site_locations)
 
+expression = h5read(TCGAh5, "data/expression")
 expression = h5read(destination_file, "data/expression", index=list(1:length(genes), site_locations))
 
 rownames(expression) = genes
