@@ -2,9 +2,23 @@ import os,glob,time
 from pptx import Presentation
 from pptx.util import Inches
 
-imgpath=glob.glob("/media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/03qualimap/08PBMC0102_191213/*/images_qualimapReport/Coverage Profile Along Genes (High).png")
+imgpath=glob.glob("/media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/03qualimap/08PBMC0102_191213/*/images_qualimapReport/Coverage Profile Along Genes (Total).png")
 
+prs = Presentation()
+title_slide = prs.slides[0]
+presentation_title = tilte_slide.shapes.title
+presentation_title.text = "QC PBMC 01-02"
+blank_slide_layout = prs.slide_layouts[6]
+slide1 = prs.slides.add_slide(blank_slide_layout)
 
+n=0
+for imgf in imgpath:
+    n+=1
+    left = top = Inches(0.3)
+    slide1=prs.slides.add_slide(blank_slide_layout)
+    pic = slide1.shapes.add_picture(imgf, left, top, height=Inches(4))
+  
+prs.save('/media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/03qualimap/08PBMC0102_%s.pptx'%(time.strftime("%y%m%d")))
 
 # ====> 191014_python_pptx.py
 import time
