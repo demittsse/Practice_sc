@@ -1,6 +1,16 @@
+import os,glob,time
+from pptx import Presentation
+from pptx.util import Inches
+
+imgpath=glob.glob("/media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/03qualimap/08PBMC0102_191213/*/images_qualimapReport/Coverage Profile Along Genes (High).png")
+
+
+
+# ====> 191014_python_pptx.py
 import time
 from pptx import Presentation
 from pptx.util import Inches
+
 
 imgdir="/media/desktop-bi-16/D2C67EE7C67ECAED/BI/Analysis/191014/qc_CMC018_019/"
 img1=imgdir+'fastqc_per_base_sequence_quality_plot.png'
