@@ -3,6 +3,227 @@ library("dplyr")
 library(rhdf5)
 library(preprocessCore)
 
+### read TCGA Expression file and Meta file ###
+TCGAall=read.csv("191217TCGAAllcancer.csv", row.names=1, sep = ",", header = T)
+meta1=read.csv("191217modTCGACllinical.csv", header = T)
+
+library(ggplot2)
+library(stringr)
+#library(hrbrthemes)
+# number of sample by cancertype
+
+ggplot(data = meta1, aes(x = Cancertype)) +geom_bar()+theme_bw()+theme(axis.text.x=element_text(angle=90, hjust=1))
+
+ggplot(meta1, aes( x = reorder(Cancertype,Cancertype,function(x)-length(x)))) + geom_bar() + theme_bw() + theme(axis.text.x=element_text(angle=90, hjust=1))
+
+
+
+extractmeta1=meta1[,c('Cancertype','Sampletype')]
+extractmeta1["Freq"]=1
+freqSampletype=aggregate(Freq ~ Cancertype + Sampletype, data = extractmeta1, sum)
+
+## Sampletype X Cancertype
+
+ggplot(extractmeta1, aes(fill=Sampletype, y=Freq, x=Cancertype))+
++ geom_bar(position="stack", stat="identity") +
++ theme(axis.text.x=element_text(angle=90, hjust=1))
+
+## Sampletype X Cancertype with order
+ggplot(extractmeta1, aes(fill=Sampletype, y=Freq, x=reorder(Cancertype,-extractmeta1$Freq,sum)))+
+	geom_bar(position="stack", stat="identity") +
+	theme(axis.text.x=element_text(angle=90, hjust=1))
+
+## Sampletype X Cancertype with order
+ggplot(extractmeta1, aes(fill=Sampletype, y=Freq, x=reorder(Cancertype,-extractmeta1$Freq,sum))) + 
+	geom_bar(position="stack", stat="identity") + 
+	scale_x_discrete(labels = function(x) str_wrap(x, width =15)) +
+	theme(axis.text.x=element_text(angle=90, hjust=1))
+
+
+
+
+# cancerfreq=data.frame(cbind(unique(meta1$Cancertype),table(meta1$Cancertype)))
+# table(meta1$Sampletype,meta1$Cancertype)
+# sqldf('select count(Sampletype), count(Cancertype) from meta1')
+
+### extract hdf5 files
+
+
+ptcga="/media/cytogenbi1/e6ec2b5e-fd48-426e-82ab-0e7578d5b110/home/desktop-bi-16/TCGA"
+setwd(ptcga)
+
+TCGAh5<-H5Fopen("tcga_matrix.h5")
+Tgene=h5read(TCGAh5, "meta/genes")
+analytes.submitter_id=h5read(TCGAh5, "/meta/gdc_cases.samples.portions.analytes.submitter_id")
+gdc_submitter_id=h5read(TCGAh5, "/meta/gdc_submitter_id")
+gdc_cases.case_id=h5read(TCGAh5, "/meta/gdc_cases.case_id")
+
+gdc_cases.project.project_i=h5read(TCGAh5, "/meta/dgdc_cases.project.project_id
+gdc_cases.samples.portions.analytes.aliquots.aliquot_id=h5read(TCGAh5, "/meta/gdc_cases.samples.portions.analytes.aliquots.aliquot_id
+gdc_cases.samples.portions.analytes.aliquots.submitter_id=h5read(TCGAh5, "/meta/gdc_cases.samples.portions.analytes.aliquots.submitter_id
+gdc_cases.samples.portions.analytes.analyte_id=h5read(TCGAh5, "/meta/gdc_cases.samples.portions.analytes.analyte_id
+
+site_locations = which(Tprimarysite %in% "Breast")
+analytes.submitter_id[site_locations]
+
+Tcancertype=h5read(TCGAh5,"/meta/cancertype")
+Tsample_type=h5read(TCGAh5,"/meta/gdc_cases.samples.sample_type")
+
+Tsample_id=h5read(TCGAh5,"/meta/sampleid")
+Texpression = h5read(TCGAh5, "data/expression")
+
+rownames(Texpression) = Tgene
+colnames(Texpression) = Tsample_id
+
+write.csv(Texpression,file="191217TCGAAllcancer.csv")
+
+### read clinical data
+paad=read.csv("PAADclinical.tsv", sep = "\t",header = T)
+colnames(paad)
+
+intersect(paad$case_id,gdc_cases.case_id)
+
+#intersect(paad$diagnosis_id)
+#intersect(paad$treatment_id)
+
+
+
+
+### make meta file "Sampleid","Barcode","Cancertype","Sampletype"
+meta1<-data.frame(matrix(nrow=length(analytes.submitter_id), ncol=4))
+colnames(meta1)=c("CaseID","Barcode","Cancertype","Sampletype")
+#rownames(meta1)
+
+meta1["Barcode"]=analytes.submitter_id
+meta1["Cancertype"]=Tcancertype
+meta1["Sampletype"]=Tsample_type
+meta1["CaseID"]=gdc_cases.case_id
+
+write.csv(meta1,file="191217modTCGACllinical.csv")
+
+# ==> "191217modTCGACllinical.csv"
+# 5838f42e-5238-4ff1-bb82-05e3e3e5abdc
+
+
+# gdc file id
+#> head(Tsample_id)
+#[1] "3DFF72D2-F292-497E-ACE3-6FAA9C884205"
+#[2] "B1E54366-42B9-463C-8615-B34D52BD14DC"
+#[3] "473713F7-EB41-4F20-A37F-ACD209E3CB75"
+#[4] "11F18F54-9B33-4C33-BDF9-0F093F4F3336"
+#[5] "136B7576-1108-4FA3-8254-6069F0CA879A"
+#[6] "E81FA8B7-3FFE-4F73-94AF-0B5257D7F81A"
+
+# ==> PAADclinical.tsv <==
+#"37daa7f7-df62-5f38-8035-c17d2a8a931b"
+
+
+### read TCGA Expression file and Meta file ###
+TCGAall=read.csv("191217TCGAAllcancer.csv", row.names=1, sep = ",", header = T)
+meta1=read.csv("191217modTCGACllinical.csv", header = T)
+
+
+
+TCGA_bar=colnames(TCGAall)
+meta1["BarcodeMod"]=str_replace_all(meta1$Barcode,"-",".")
+
+
+> head(meta1)
+  X              Barcode                     Cancertype    Sampletype
+1 1 TCGA-DD-AAVP-01A-11R Liver Hepatocellular Carcinoma Primary Tumor
+2 2 TCGA-KK-A7B2-01A-12R        Prostate Adenocarcinoma Primary Tumor
+3 3 TCGA-DC-6158-01A-11R          Rectum Adenocarcinoma Primary Tumor
+4 4 TCGA-DD-A4NP-01A-11R Liver Hepatocellular Carcinoma Primary Tumor
+5 5 TCGA-HQ-A5ND-01A-11R   Bladder Urothelial Carcinoma Primary Tumor
+6 6 TCGA-HT-A614-01A-11R       Brain Lower Grade Glioma Primary Tumor
+            BarcodeMod
+1 TCGA.DD.AAVP.01A.11R
+2 TCGA.KK.A7B2.01A.12R
+3 TCGA.DC.6158.01A.11R
+4 TCGA.DD.A4NP.01A.11R
+5 TCGA.HQ.A5ND.01A.11R
+6 TCGA.HT.A614.01A.11R
+
+
+> colnames(meta1)
+[1] "X"          "Barcode"    "Cancertype" "Sampletype" "BarcodeMod"
+
+> table(meta_breast$Sampletype)
+
+                       Additional - New Primary                                               0 
+                          Additional Metastatic                                               0 
+                                     Metastatic                                               7 
+Primary Blood Derived Cancer - Peripheral Blood                                               0 
+                                  Primary Tumor                                            1127 
+                                Recurrent Tumor                                               0 
+                            Solid Tissue Normal                                             112 
+
+
+meta_breast=subset(meta1, Cancertype == "Breast Invasive Carcinoma")
+meta_breast_primary=subset(meta_breast, Sampletype=="Primary Tumor")
+meta_breast_normal=subset(meta_breast, Sampletype=="Solid Tissue Normal")
+meta_breast_metastatic=subset(meta_breast, Sampletype=="Metastatic")
+
+
+
+Bar_BRCANormal=meta_breast_normal$BarcodeMod
+Bar_BRCAmeta=meta_breast_metastatic$BarcodeMod
+Bar_BRCAPrimary=meta_breast_primary$BarcodeMod
+
+Bar_BRCATumor=c(Bar_BRCAmeta, Bar_BRCAPrimary)
+
+#==== Metastatic 7 + Primary Tumor 1127 vs Solid Tissue Normal ====#
+
+subBRCATumor=TCGAbreast[,Bar_BRCATumor]
+subBRCANormal=TCGAbreast[,Bar_BRCANormal]
+
+
+
+# other cancer type
+> table(meta_ExBRCA$Sampletype)
+
+                       Additional - New Primary 
+                                             11 
+                          Additional Metastatic 
+                                              1 
+                                     Metastatic 
+                                            387 
+Primary Blood Derived Cancer - Peripheral Blood 
+                                            126 
+                                  Primary Tumor 
+                                           8835 
+                                Recurrent Tumor 
+                                             50 
+                            Solid Tissue Normal 
+                                            628 
+
+
+ExBRCA=read.csv("/media/cytogenbi2/6eaf3ba8-a866-4e8a-97ef-23c61f7da612/BreastCancer/data/ReCount2OverARCHS4/191209TCGAExceptBreastTissue_log2.csv", row.names=1, sep = ",", header = T)
+
+meta_ExBRCA=subset(meta1, Cancertype != "Breast Invasive Carcinoma")
+meta_ExBRCA_primary=subset(meta_ExBRCA, Sampletype=="Primary Tumor")
+meta_ExBRCA_normal=subset(meta_ExBRCA, Sampletype=="Solid Tissue Normal")
+meta_ExBRCA_metastatic=subset(meta_ExBRCA, Sampletype=="Metastatic")
+meta_ExBRCA_recurrent=subset(meta_ExBRCA, Sampletype=="Recurrent Tumor")
+meta_ExBRCA_peripheral=subset(meta_ExBRCA, Sampletype=="Primary Blood Derived Cancer - Peripheral Blood")
+
+##include Additional - New Primary(11)>> primary , Additional Metastatic(1) >>metastatic
+meta_breast_primary2=meta_ExBRCA[grep("Primary", meta_ExBRCA$Sampletype),]
+meta_ExBRCA_metastatic2=meta_ExBRCA[grep("Metastatic", meta_ExBRCA$Sampletype),]
+
+
+
+
+
+
+
+
+# ===> 191217rhdf5.R
+library("dplyr")
+
+library(rhdf5)
+library(preprocessCore)
+
 
 ptcga="/media/cytogenbi1/e6ec2b5e-fd48-426e-82ab-0e7578d5b110/home/desktop-bi-16/TCGA"
 setwd(ptcga)
