@@ -21,7 +21,11 @@ ggplot(meta1, aes( x = reorder(Cancertype,Cancertype,function(x)-length(x)))) + 
 extractmeta1=meta1[,c('Cancertype','Sampletype')]
 extractmeta1["Freq"]=1
 freqSampletype=aggregate(Freq ~ Cancertype + Sampletype, data = extractmeta1, sum)
+write.csv(freqSampletype,file="freqSampletype.csv")
 
+			       
+freqSampletype %>% spread(key='Cancertype', value='Freq')-> freqSample2
+write.csv(freqSample2,file="freqSample2.csv")
 ## Sampletype X Cancertype
 
 ggplot(extractmeta1, aes(fill=Sampletype, y=Freq, x=Cancertype))+
