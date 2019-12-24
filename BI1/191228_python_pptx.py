@@ -4,6 +4,8 @@ from pptx.util import Inches
 
 imgpath=glob.glob("/media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/03qualimap/09SMC005_191218/*/images_qualimapReport/Coverage Profile Along Genes (Total).png")
 
+imgpath=glob.glob("/media/cytogenbi2/8e7f6c8b-bc45-4c58-816f-a062fd95b91a/03qualimap/09SMC005_191218/*/images_qualimapReport/Reads Genomic Origin.png")
+
 prs = Presentation()
 title_slide = prs.slides[0]
 presentation_title = tilte_slide.shapes.title
