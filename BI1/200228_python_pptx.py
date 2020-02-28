@@ -1,4 +1,23 @@
-import os,glob,time
+# ====> 200228_python_pptx.py
+import os
+import glob
+import time
+from pptx import Presentation
+from pptx.util import Inches
+
+prs = Presentation()
+title_slide_layout = prs.slide_layouts[0]
+slide = prs.slides.add_slide(title_slide_layout)
+subtitle = slide.placeholders[1]
+title.text = "CCLE RNA gene expression"
+subtitle.text = "2020-02-28"
+prs.save("/home/cytogenbi2/SingleCell/ccle.pptx")
+
+
+# ====> 191228_python_pptx.py
+import os
+import glob
+import time
 from pptx import Presentation
 from pptx.util import Inches
 
